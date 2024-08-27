@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CFRF Shelf Research Fleet</title>
+    <link rel="icon" href="https://ondeckdata.com/cfrf_erddap_logo.svg" type="image/svg+xml">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        body {
+            font-size: 1.2em;
+            /* Increase the base font size */
+        }
+
+        #top-bar {
+            background-color: #0b285b;
+            height: 70px;
+            position: relative;
+        }
+
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            height: 150px;
+        }
+
+        h1 {
+            color: white;
+            position: absolute;
+            top: 15px;
+            left: 80px;
+            margin: 0;
+        }
+
+        #plot {
+            width: 100%;
+            height: 1500px;
+        }
+
+        /* Increase font size for labels and input boxes */
+            label {
+                font-size: 1.5em;
+            }
+
+            input[type="text"] {
+                font-size: 1.5em;
+                padding: 5px;
+                display: block;
+                width: 50%;
+                box-sizing: border-box;
+            }
+
+            input[type="date"] {
+                font-size: 1.5em;
+                display: block;
+                position: relative;
+                padding: 5px;
+                width: 5%;
+                box-sizing: border-box;
+            }
+
+            button {
+                font-size: 1.5em;
+                padding: 10px 50px;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="top-bar"></div> <!-- Blue bar at the top -->
+    <br><br> <!-- Add some space below the blue bar -->
+    <!-- <img id="logo" src="https://ondeckdata.com/cfrf_erddap_logo.svg" alt="CFRF Logo"> -->
+    <h1>CFRF | WHOI Shelf Research Fleet</h1>
+    <h2>About</h2>
+    <p> This viewer displays real time CTD casts collected by commericial fishermen as part of the <a
+            href="https://www.cfrfoundation.org/shelf-research-fleet" style="color: blue; text-decoration: none;">
+            CFRF | WHOI Shelf Research Fleet.
+        </a> To access the data check out our <a
+            href="https://erddap.ondeckdata.com/erddap/info/index.html?page=1&itemsPerPage=1000"
+            style="color: blue; text-decoration: none;">ERDDAP server.</a>
+    </p>
+    <form id="date-form">
+        <br>
+        <label for="start_date">Start Date:</label>
+        <br>
+        <input type="date" id="start_date" name="start_date">
+
+        <br>
+        <label for="end_date">End Date:</label>
+        <br>
+        <input type="date" id="end_date" name="end_date">
+        <br>
+        <button type="submit">Plot!</button>
+        <!-- <button id="resetButton">Reset to Last 2 Weeks</button> -->
+
+    </form>
+
+    <div id="plot"></div> <!-- Ensure the plot div is defined -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Calculate the current date and the date two weeks ago
+            const currentDate = new Date();
+            const twoWeeksAgo = new Date();
+            twoWeeksAgo.setDate(currentDate.getDate() - 14);
+
+            // Format dates to YYYY-MM-DD
+            const formatDate = (date) => date.toISOString().split('T')[0];
+
+            // Initialize Flatpickr on the date inputs
+            const startDatePicker = flatpickr("#start_date", {
+                dateFormat: "Y-m-d",
+                defaultDate: formatDate(twoWeeksAgo),
+                maxDate: formatDate(currentDate), // Set max date to current date
+                onChange: function (selectedDates, dateStr, instance) {
+                    endDatePicker.set('minDate', dateStr);
+                }
+            });
+
+            const endDatePicker = flatpickr("#end_date", {
+                dateFormat: "Y-m-d",
+                defaultDate: formatDate(currentDate),
+                minDate: formatDate(twoWeeksAgo),
+                maxDate: formatDate(currentDate) // Set max date to current date
+            });
+
+            // Fetch and plot data for the past two weeks
+            fetchAndPlotData(formatDate(twoWeeksAgo), formatDate(currentDate));
+        });
+
+        document.getElementById('date-form').addEventListener('submit', function (event) {
+            console.log('Form submitted');
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const start_date = formData.get('start_date');
+            const end_date = formData.get('end_date');
+
+            fetchAndPlotData(start_date, end_date);
+        });
+        // document.getElementById('resetButton').addEventListener('click', function (event) {
+        //     console.log('Reset button clicked');
+        //     const currentDate = new Date();
+        //     const twoWeeksAgo = new Date();
+        //     twoWeeksAgo.setDate(currentDate.getDate() - 14);
+        //     fetchAndPlotData(formatDate(twoWeeksAgo), formatDate(currentDate));
+        // });
+
+        function fetchAndPlotData(start_date, end_date) {
+            fetch('/filter_data', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    'start_date': start_date,
+                    'end_date': end_date
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || !data.plot_data) {
+                        alert('No data received or data is invalid.');
+                        return;
+                    }
+                    const plotData = JSON.parse(data.plot_data);
+                    Plotly.newPlot('plot', plotData.data, plotData.layout);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>

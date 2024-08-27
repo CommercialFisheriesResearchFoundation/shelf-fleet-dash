@@ -1,0 +1,259 @@
+__author__ = "Linus Stoltz"
+__version__ = "1.1"
+__email__ = "lstoltz@cfrfoundation.org"
+from flask import Flask, render_template, jsonify, request
+import pandas as pd
+# import io
+from erddapy import ERDDAP
+import plotly
+import plotly.express as px
+import json
+import plotly.graph_objs as go
+import pandas as pd
+from plotly.subplots import make_subplots
+from datetime import datetime
+import logging
+
+
+app = Flask(__name__)
+# Configure logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler()
+    ]
+)
+# Global variable to hold the full dataset
+full_dataset = None
+first_request = True
+
+def truncate_at_first_space(col_name):
+    return col_name.split(' ')[0]
+
+def extract_date_from_string(text):
+    # Split the string by underscore
+    parts = text.split('_')
+    
+    # Extract the date part
+    date_str = parts[1]
+    
+    # Convert the date string to a datetime object
+    date_obj = datetime.strptime(date_str, '%Y%m%d')
+    
+    return date_obj
+@app.before_request
+def load_full_dataset():
+    logger.info('querying erddap...')
+    global full_dataset, first_request
+    if first_request:
+        first_request = False
+        
+        # Build the ERDDAP query URL for the full dataset
+        server = 'https://erddap.ondeckdata.com/erddap/'
+
+        try:
+            e = ERDDAP(
+                server=server,
+                protocol="tabledap",
+                response="nc",
+            )
+            e.dataset_id = 'shelf_fleet_profiles_1m_binned'
+            e.constraints = {'profile_orientation=':1}
+            full_dataset = e.to_pandas()
+        except Exception as e:
+            logger.error(f'Error connecting to ERDDAP server: {e}')
+            return
+        logger.info('got data from erddap')
+        full_dataset.rename(columns=lambda x: truncate_at_first_space(x), inplace=True)
+        full_dataset['time'] = pd.to_datetime(full_dataset['time'])
+        full_dataset['sample_date'] = full_dataset['time'].dt.date
+        full_dataset['time_numeric'] = pd.to_numeric(full_dataset['time'])
+        full_dataset['extracted_date'] = full_dataset['profile_id'].apply(extract_date_from_string)
+        
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/filter_data', methods=['POST'])
+def filter_data():
+    try:
+        global full_dataset
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
+        
+        filtered_data = full_dataset[(full_dataset['time'] >= start_date) & (full_dataset['time'] <= end_date)]
+        # fig = create_data_plot(filtered_data)
+        # fig = px.line(filtered_data, x='temperature', y='sea_pressure', title='Temperature', color='time')
+        logger.info('creating plots')
+        fig = create_data_plots(filtered_data)
+        plot_data = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        return jsonify({'plot_data': plot_data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def create_data_plots_working(plot_df):
+    #! Don't ice this function
+    # Normalize the time_numeric column to a range between 0 and 1
+    plot_df['time_normalized'] = (plot_df['time_numeric'] - plot_df['time_numeric'].min()) / \
+                                 (plot_df['time_numeric'].max() - plot_df['time_numeric'].min())
+
+    # Define the color scale
+    colorscale = px.colors.sequential.Rainbow
+    # Create subplots: 2 rows, 2 columns
+    fig = make_subplots(rows=2, cols=2, subplot_titles=(
+        'Temperature',
+        'Salinity',
+        'Density',
+        'Chlorophyll'
+    ))
+
+    # List of variables to plot
+    variables = ['temperature', 'absolute_salinity', 'density', 'chlorophyll']
+    titles = ['Celcius', 'Absolute Salinity', 'Density', '[Chl-a] ug/L']
+
+    # Add traces for each variable
+    for i, variable in enumerate(variables):
+        row = i // 2 + 1
+        col = i % 2 + 1
+        for sample_date, group in plot_df.groupby(['profile_id', 'sample_date']):
+            color_idx = int(group['time_normalized'].iloc[0] * (len(colorscale) - 1))
+            fig.add_trace(go.Scatter(
+                x=group[variable],
+                y=group['sea_pressure'],
+                mode='lines',
+                line=dict(color=colorscale[color_idx], width=4),
+                name=f' {sample_date[1]} | {variable}'
+            ), row=row, col=col)
+
+        # Invert the y-axis for the first subplot
+        
+        fig.update_yaxes(autorange='reversed', row=row, col=col)
+
+        # Set axis titles
+        fig.update_xaxes(title_text=titles[i], row=row, col=col)
+        fig.update_yaxes(title_text='Depth (meters)', row=row, col=col)
+
+    # Set plot title and layout
+    fig.update_layout(
+        # title='Oceanographic Casts Shelf Research Fleet',
+        height=1200,
+        width=1600,
+        showlegend=True
+    )
+    return fig
+
+
+def create_data_plots(plot_df):
+    # Normalize the time_numeric column to a range between 0 and 1
+    plot_df['time_normalized'] = (plot_df['time_numeric'] - plot_df['time_numeric'].min()) / \
+                                 (plot_df['time_numeric'].max() - plot_df['time_numeric'].min())
+    plot_df = plot_df[plot_df['profile_orientation'] == 1]
+
+    # Define the color scale
+    colorscale = px.colors.sequential.Rainbow
+    try:
+        # Create subplots: 3 rows, 2 columns
+        fig = make_subplots(
+        rows=3, cols=2, 
+        subplot_titles=(
+            'Temperature',
+            'Salinity',
+            'Density',
+            'Chlorophyll',
+            ''
+        ),
+        specs=[[{}, {}], [{}, {}], [{"type": "mapbox", "colspan": 2}, None]]
+    )
+
+        # List of variables to plot
+        variables = ['temperature', 'absolute_salinity', 'density', 'chlorophyll']
+        titles = ['Celcius', 'Absolute Salinity', 'Density', '[Chl-a] ug/L']
+
+        # Add traces for each variable
+        for i, variable in enumerate(variables):
+            row = i // 2 + 1
+            col = i % 2 + 1
+            for profile_id, group in plot_df.groupby(['extracted_date']):
+                color_idx = int(group['time_normalized'].iloc[0] * (len(colorscale) - 1))
+                color = colorscale[color_idx]
+                fig.add_trace(go.Scatter(
+                    x=group[variable],
+                    y=group['sea_pressure'],
+                    mode='lines',
+                    line=dict(color=color, width=4),
+                    hoverinfo='text',
+                    name=f'{profile_id} | {variable}',
+                    legendgroup=str(profile_id)
+                ), row=row, col=col)
+
+            # Invert the y-axis for the first subplot
+            fig.update_yaxes(autorange='reversed', row=row, col=col)
+
+            # Set axis titles
+            fig.update_xaxes(title_text=titles[i], row=row, col=col)
+            fig.update_yaxes(title_text='Depth (meters)', row=row, col=col)
+
+        # Create the map subplot
+        df = plot_df.groupby('extracted_date').agg({'sample_date':'first', 'latitude':'first', 'longitude':'first'}).reset_index()
+        for profile_id, row in df.iterrows():
+            color_idx = int(plot_df[plot_df['extracted_date'] == row['extracted_date']]['time_normalized'].iloc[0] * (len(colorscale) - 1))
+            color = colorscale[color_idx]
+            fig.add_trace(go.Scattermapbox(
+                lat=[row['latitude']],
+                lon=[row['longitude']],
+                mode='markers',
+                marker=dict(size=15, color=color),
+                hoverinfo='lat+lon',
+                name=f'{row["extracted_date"]} | Map',
+                legendgroup=str(row['extracted_date'])
+            ), row=3, col=1)
+
+        # Set the mapbox layout
+        center_lat = df['latitude'].mean()
+        center_lon = df['longitude'].mean()
+        fig.update_layout(
+            mapbox=dict(
+                domain={'x': [0, 1], 'y': [0, 0.33]},
+                style="open-street-map",
+                center={"lat": center_lat, "lon": center_lon},
+                zoom=6
+            ),
+            height=1800,
+            width=1600,
+            showlegend=True,
+            updatemenus=[dict(
+        type="buttons",
+        direction="left",
+        buttons=list([
+            dict(
+                args=["showlegend", True],
+                label="Show Legend",
+                method="relayout"
+            ),
+            dict(
+                args=["showlegend", False],
+                label="Hide Legend",
+                method="relayout"
+            )
+        ]),
+        pad={"r": 10, "t": 10},
+        showactive=True,
+        x=0.1,
+        xanchor="left",
+        y=1.1,
+        yanchor="top"
+    )]
+    )
+    except Exception as e:
+        logger.error('error: %s', e)
+    return fig
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+
+
