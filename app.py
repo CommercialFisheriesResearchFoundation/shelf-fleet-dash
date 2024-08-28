@@ -1,7 +1,7 @@
 __author__ = "Linus Stoltz"
 __version__ = "1.1"
 __email__ = "lstoltz@cfrfoundation.org"
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, abort
 import pandas as pd
 # import io
 from erddapy import ERDDAP
@@ -109,8 +109,11 @@ def index():
         return jsonify({'error': 'Error rendering index.html'}), 500
 
 
-@app.route('/filter_data', methods=['POST'])
+@app.route('/shelfdash/filter_data', methods=['POST'])
 def filter_data():
+    # if request.remote_addr not in ALLOWED_IPS:
+    #     abort(403)  # Forbidden
+
     filtered_data = None
     try:
         global full_dataset

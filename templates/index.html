@@ -171,7 +171,7 @@
         // });
 
         function fetchAndPlotData(start_date, end_date) {
-            fetch('/filter_data', {
+            fetch('/shelfdash/filter_data', {
                 method: 'POST',
                 body: new URLSearchParams({
                     'start_date': start_date,
