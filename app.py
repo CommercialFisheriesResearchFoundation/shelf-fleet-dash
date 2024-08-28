@@ -14,8 +14,6 @@ from plotly.subplots import make_subplots
 from datetime import datetime
 import logging
 
-
-app = Flask(__name__)
 # Configure logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -27,31 +25,42 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+logger.info('Starting ShelfDash...')
+
+app = Flask(__name__)
+app.config['APPLICATION_ROOT'] = '/shelfdash'
+
+
 # Global variable to hold the full dataset
 full_dataset = None
 first_request = True
 
+
 def truncate_at_first_space(col_name):
     return col_name.split(' ')[0]
+
 
 def extract_date_from_string(text):
     # Split the string by underscore
     parts = text.split('_')
-    
+
     # Extract the date part
     date_str = parts[1]
-    
+
     # Convert the date string to a datetime object
     date_obj = datetime.strptime(date_str, '%Y%m%d')
-    
+
     return date_obj
+
+
 @app.before_request
 def load_full_dataset():
-    logger.info('querying erddap...')
-    global full_dataset, first_request
+    logger.info('request for full dataset...')
+    global full_dataset, first_request, latest_observation, cast_count
     if first_request:
+        logger.info('first time requesting or refreshing data...')
         first_request = False
-        
+
         # Build the ERDDAP query URL for the full dataset
         server = 'https://erddap.ondeckdata.com/erddap/'
 
@@ -62,45 +71,72 @@ def load_full_dataset():
                 response="nc",
             )
             e.dataset_id = 'shelf_fleet_profiles_1m_binned'
-            e.constraints = {'profile_orientation=':1}
+            e.constraints = {'profile_orientation=': 1}
             full_dataset = e.to_pandas()
         except Exception as e:
             logger.error(f'Error connecting to ERDDAP server: {e}')
             return
         logger.info('got data from erddap')
-        full_dataset.rename(columns=lambda x: truncate_at_first_space(x), inplace=True)
+        # Do some reshaping a bit to plot on the front ent
+        full_dataset.rename(
+            columns=lambda x: truncate_at_first_space(x), inplace=True)
         full_dataset['time'] = pd.to_datetime(full_dataset['time'])
-        full_dataset['sample_date'] = full_dataset['time'].dt.date
+
+        # need to create a common time stamp for each profile
+        first_observation = full_dataset.groupby(
+            'profile_id')['time'].first().reset_index()
+        first_observation.rename(columns={'time': 'sample_date'}, inplace=True)
+        # and merge it back in
+        full_dataset = full_dataset.merge(
+            first_observation, on='profile_id', how='left')
+        full_dataset['first_observation'] = full_dataset['sample_date'].dt.strftime(
+            '%Y-%m-%d %H:%M')
         full_dataset['time_numeric'] = pd.to_numeric(full_dataset['time'])
-        full_dataset['extracted_date'] = full_dataset['profile_id'].apply(extract_date_from_string)
-        
-@app.route('/')
+        latest_observation = full_dataset['time'].max().strftime('%Y-%m-%d')
+        cast_count = full_dataset['profile_id'].nunique()
+        # full_dataset['extracted_date'] = full_dataset['profile_id'].apply(extract_date_from_string)
+    else:
+        logger.info('using cached dataset...')
+
+
+@app.route('/shelfdash')
 def index():
-    return render_template('index.html')
+    logger.info('rendering index.html')
+    try:
+        return render_template('index.html')
+    except Exception as e:
+        logger.info('error rendering index.html: %s', e)
+        return jsonify({'error': 'Error rendering index.html'}), 500
+
 
 @app.route('/filter_data', methods=['POST'])
 def filter_data():
+    filtered_data = None
     try:
         global full_dataset
+        logger.info('getting dates from front end...')
         start_date = request.form['start_date']
         end_date = request.form['end_date']
-        
-        filtered_data = full_dataset[(full_dataset['time'] >= start_date) & (full_dataset['time'] <= end_date)]
+
+        filtered_data = full_dataset[(full_dataset['time'] >= start_date) & (
+            full_dataset['time'] <= end_date)]
         # fig = create_data_plot(filtered_data)
         # fig = px.line(filtered_data, x='temperature', y='sea_pressure', title='Temperature', color='time')
         logger.info('creating plots')
         fig = create_data_plots(filtered_data)
         plot_data = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-        
+
         return jsonify({'plot_data': plot_data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 def create_data_plots_working(plot_df):
     #! Don't ice this function
     # Normalize the time_numeric column to a range between 0 and 1
     plot_df['time_normalized'] = (plot_df['time_numeric'] - plot_df['time_numeric'].min()) / \
-                                 (plot_df['time_numeric'].max() - plot_df['time_numeric'].min())
+                                 (plot_df['time_numeric'].max() -
+                                  plot_df['time_numeric'].min())
 
     # Define the color scale
     colorscale = px.colors.sequential.Rainbow
@@ -121,7 +157,8 @@ def create_data_plots_working(plot_df):
         row = i // 2 + 1
         col = i % 2 + 1
         for sample_date, group in plot_df.groupby(['profile_id', 'sample_date']):
-            color_idx = int(group['time_normalized'].iloc[0] * (len(colorscale) - 1))
+            color_idx = int(group['time_normalized'].iloc[0]
+                            * (len(colorscale) - 1))
             fig.add_trace(go.Scatter(
                 x=group[variable],
                 y=group['sea_pressure'],
@@ -131,7 +168,7 @@ def create_data_plots_working(plot_df):
             ), row=row, col=col)
 
         # Invert the y-axis for the first subplot
-        
+
         fig.update_yaxes(autorange='reversed', row=row, col=col)
 
         # Set axis titles
@@ -151,44 +188,55 @@ def create_data_plots_working(plot_df):
 def create_data_plots(plot_df):
     # Normalize the time_numeric column to a range between 0 and 1
     plot_df['time_normalized'] = (plot_df['time_numeric'] - plot_df['time_numeric'].min()) / \
-                                 (plot_df['time_numeric'].max() - plot_df['time_numeric'].min())
-    plot_df = plot_df[plot_df['profile_orientation'] == 1]
-
+                                 (plot_df['time_numeric'].max() -
+                                  plot_df['time_numeric'].min())
+    plot_df = plot_df[(plot_df['profile_orientation'] == 1) & (plot_df['sea_pressure'] > 1)]
+    plot_df['hover_text'] = plot_df.apply(lambda row: f"Date: {row['first_observation']}", axis=1)
     # Define the color scale
     colorscale = px.colors.sequential.Rainbow
     try:
         # Create subplots: 3 rows, 2 columns
         fig = make_subplots(
-        rows=3, cols=2, 
-        subplot_titles=(
-            'Temperature',
-            'Salinity',
-            'Density',
-            'Chlorophyll',
-            ''
-        ),
-        specs=[[{}, {}], [{}, {}], [{"type": "mapbox", "colspan": 2}, None]]
-    )
+            rows=3, cols=2,
+            subplot_titles=(
+                'Temperature',
+                'Salinity',
+                'Density',
+                'Chlorophyll',
+                ' '
+            ),
+            specs=[[{}, {}], [{}, {}], [{"type": "mapbox", "colspan": 2}, None]],
+            vertical_spacing=0.08,
+            row_heights=[0.4, 0.4, 0.6]  # Adjust the heights of the rows
+        )
 
         # List of variables to plot
-        variables = ['temperature', 'absolute_salinity', 'density', 'chlorophyll']
-        titles = ['Celcius', 'Absolute Salinity', 'Density', '[Chl-a] ug/L']
+        variables = ['temperature', 'absolute_salinity',
+                     'density', 'chlorophyll']
+        titles = ['Degrees Celcius', 'Grams per Kilogram',
+                  'Kilograms per Meter\u00B3', '[Chl-a] Micrograms per Liter']
 
         # Add traces for each variable
         for i, variable in enumerate(variables):
             row = i // 2 + 1
             col = i % 2 + 1
-            for profile_id, group in plot_df.groupby(['extracted_date']):
-                color_idx = int(group['time_normalized'].iloc[0] * (len(colorscale) - 1))
+            # extracted date is the profile_id derivative
+            for profile_id, group in plot_df.groupby(['first_observation']):
+                color_idx = int(
+                    group['time_normalized'].iloc[0] * (len(colorscale) - 1))
                 color = colorscale[color_idx]
+                # Show legend only for the first variable
+                showlegend = (i == 0)
                 fig.add_trace(go.Scatter(
                     x=group[variable],
                     y=group['sea_pressure'],
                     mode='lines',
                     line=dict(color=color, width=4),
                     hoverinfo='text',
-                    name=f'{profile_id} | {variable}',
-                    legendgroup=str(profile_id)
+                    hovertext=group['hover_text'],
+                    name=f'{profile_id[0]}',
+                    legendgroup=str(profile_id[0]),
+                    showlegend=showlegend
                 ), row=row, col=col)
 
             # Invert the y-axis for the first subplot
@@ -196,12 +244,15 @@ def create_data_plots(plot_df):
 
             # Set axis titles
             fig.update_xaxes(title_text=titles[i], row=row, col=col)
+            fig.update_xaxes(title_text=titles[i], row=row, col=col)
             fig.update_yaxes(title_text='Depth (meters)', row=row, col=col)
 
         # Create the map subplot
-        df = plot_df.groupby('extracted_date').agg({'sample_date':'first', 'latitude':'first', 'longitude':'first'}).reset_index()
+        df = plot_df.groupby('profile_id').agg(
+            {'first_observation': 'first', 'latitude': 'first', 'longitude': 'first'}).reset_index()
         for profile_id, row in df.iterrows():
-            color_idx = int(plot_df[plot_df['extracted_date'] == row['extracted_date']]['time_normalized'].iloc[0] * (len(colorscale) - 1))
+            color_idx = int(plot_df[plot_df['first_observation'] == row['first_observation']]
+                            ['time_normalized'].iloc[0] * (len(colorscale) - 1))
             color = colorscale[color_idx]
             fig.add_trace(go.Scattermapbox(
                 lat=[row['latitude']],
@@ -209,13 +260,17 @@ def create_data_plots(plot_df):
                 mode='markers',
                 marker=dict(size=15, color=color),
                 hoverinfo='lat+lon',
-                name=f'{row["extracted_date"]} | Map',
-                legendgroup=str(row['extracted_date'])
+                name=f'{row["first_observation"]} | Map',
+                legendgroup=str(row['first_observation']),
+                showlegend=False  # Show legend for the map marker
             ), row=3, col=1)
 
         # Set the mapbox layout
         center_lat = df['latitude'].mean()
         center_lon = df['longitude'].mean()
+        # quick stats for the figure
+        n_casts_window = plot_df['profile_id'].nunique()
+        
         fig.update_layout(
             mapbox=dict(
                 domain={'x': [0, 1], 'y': [0, 0.33]},
@@ -223,37 +278,71 @@ def create_data_plots(plot_df):
                 center={"lat": center_lat, "lon": center_lon},
                 zoom=6
             ),
-            height=1800,
+            # clickmode='event+select',
+            height=2000,
             width=1600,
             showlegend=True,
+            title_text=f'There are {n_casts_window} casts during this time period, with {cast_count} casts total! | Latest data: {latest_observation}',
             updatemenus=[dict(
-        type="buttons",
-        direction="left",
-        buttons=list([
-            dict(
-                args=["showlegend", True],
-                label="Show Legend",
-                method="relayout"
-            ),
-            dict(
-                args=["showlegend", False],
-                label="Hide Legend",
-                method="relayout"
-            )
-        ]),
-        pad={"r": 10, "t": 10},
-        showactive=True,
-        x=0.1,
-        xanchor="left",
-        y=1.1,
-        yanchor="top"
-    )]
-    )
+                type="buttons",
+                direction="left",
+                buttons=list([
+                    dict(
+                        args=["showlegend", True],
+                        label="Show Legend",
+                        method="relayout"
+                    ),
+                    dict(
+                        args=["showlegend", False],
+                        label="Hide Legend",
+                        method="relayout"
+                    )
+                ]),
+                pad={"r": 10, "t": 10},
+                showactive=True,
+                x=0.1,
+                xanchor="left",
+                y=1.1,
+                yanchor="top"
+            )])
+        #     annotations=[
+        #         # dict(text='Temperature', x=0.25, y=0.96, xref='paper', yref='paper', showarrow=False, font=dict(size=16)),
+        #         dict(text='Salinity', x=0.75, y=0.96, xref='paper', yref='paper', showarrow=False, font=dict(size=16)),
+        #         dict(text='Density', x=0.25, y=0.62, xref='paper', yref='paper', showarrow=False, font=dict(size=16)),
+        #         dict(text='Chlorophyll', x=0.75, y=0.62, xref='paper', yref='paper', showarrow=False, font=dict(size=16)),
+        #         dict(
+        #             text=f'There are {n_casts_window} casts during this time period, with {cast_count} casts total!',
+        #             x=0.24,
+        #             y=1.06,
+        #             xref='paper',
+        #             yref='paper',
+        #             showarrow=False,
+        #             font=dict(size=20)
+        #         ),
+        #         dict(
+        #             text=f'Most recent data: {latest_observation}',
+        #             x=0.9,
+        #             y=1.04,
+        #             xref='paper',
+        #             yref='paper',
+        #             showarrow=False,
+        #             font=dict(size=20)
+        #         ),
+        #         dict(
+        #             text=f'Content developed by Linus Stoltz, Data Manager CFRF',
+        #             x=0.7,
+        #             y=0.001,
+        #             xref='paper',
+        #             yref='paper',
+        #             showarrow=False,
+        #             font=dict(size=16)
+        #         )
+        #     ]
+        # )
+
     except Exception as e:
         logger.error('error: %s', e)
     return fig
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
-
-
+    app.run(debug=False, port=5000)

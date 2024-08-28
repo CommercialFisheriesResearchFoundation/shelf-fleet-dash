@@ -41,47 +41,69 @@
         }
 
         /* Increase font size for labels and input boxes */
-            label {
-                font-size: 1.5em;
-            }
+        label {
+            font-size: 1.5em;
+        }
 
-            input[type="text"] {
-                font-size: 1.5em;
-                padding: 5px;
-                display: block;
-                width: 50%;
-                box-sizing: border-box;
-            }
+        input[type="text"] {
+            font-size: 1.5em;
+            padding: 5px;
+            display: block;
+            width: 10%;
+            box-sizing: border-box;
+        }
 
-            input[type="date"] {
-                font-size: 1.5em;
-                display: block;
-                position: relative;
-                padding: 5px;
-                width: 5%;
-                box-sizing: border-box;
-            }
+        input[type="date"] {
+            font-size: 1.5em;
+            display: block;
+            position: relative;
+            padding: 5px;
+            width: 5%;
+            box-sizing: border-box;
+        }
 
-            button {
-                font-size: 1.5em;
-                padding: 10px 50px;
-            }
+        button {
+            font-size: 1.5em;
+            padding: 10px 50px;
+        }
+        .info-paragraph {
+        max-width: 600px; /* Adjust this value as needed */
+        margin-bottom: 20px;
+    }
+    .body-style {
+        font-family: Arial, sans-serif;
+        margin: 2%;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+    .container {
+        padding-left: 100px; /* Adjust this value as needed */
+    }
     </style>
 </head>
 
-<body>
+<body class=".body-style">
     <div id="top-bar"></div> <!-- Blue bar at the top -->
     <br><br> <!-- Add some space below the blue bar -->
     <!-- <img id="logo" src="https://ondeckdata.com/cfrf_erddap_logo.svg" alt="CFRF Logo"> -->
     <h1>CFRF | WHOI Shelf Research Fleet</h1>
     <h2>About</h2>
-    <p> This viewer displays real time CTD casts collected by commericial fishermen as part of the <a
+    <p class="info-paragraph"> This viewer displays real time CTD casts collected by commericial fishermen as part of the <a
             href="https://www.cfrfoundation.org/shelf-research-fleet" style="color: blue; text-decoration: none;">
-            CFRF | WHOI Shelf Research Fleet.
-        </a> To access the data check out our <a
+            CFRF | WHOI Shelf Research Fleet. </a> <br><br>
+        These figures are showing the temperature, salinity, density,
+        chlorophyll (if applicable) profiles and the corresponding location. Observations are colored by time with
+        more recent observations appearing as warmer colors and earlier data as cooler colors.
+        To access the data check out our <a
             href="https://erddap.ondeckdata.com/erddap/info/index.html?page=1&itemsPerPage=1000"
-            style="color: blue; text-decoration: none;">ERDDAP server.</a>
-    </p>
+            style="color: blue; text-decoration: underline;">ERDDAP server.</a>
+    </p> <br><br> 
+    <h2>How to use</h2>
+    <p class="info-paragraph">  Tap or click the start and end date range then click Plot! All casts from that range will be shown below.
+        Isolate specific casts by double clicking on the legend entry. To add specific profiles to the plot single click
+        on legend entries one at a time to toggle profiles on and off the plot frame. Double clicking a legend entry or
+        clicking Plot! again will reset the display to the time range. To save a specifc plot image to your desktop,
+        click the camera icon from the action bar. The legend can be toggled with the Show and Hide buttons. </p>
     <form id="date-form">
         <br>
         <label for="start_date">Start Date:</label>
@@ -99,7 +121,7 @@
     </form>
 
     <div id="plot"></div> <!-- Ensure the plot div is defined -->
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Calculate the current date and the date two weeks ago
