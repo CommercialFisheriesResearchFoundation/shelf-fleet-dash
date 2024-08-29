@@ -13,6 +13,8 @@ import pandas as pd
 from plotly.subplots import make_subplots
 from datetime import datetime
 import logging
+import geopandas as gpd
+from shapely.geometry import LineString
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -29,6 +31,7 @@ logger.info('Starting ShelfDash...')
 
 app = Flask(__name__)
 app.config['APPLICATION_ROOT'] = '/shelfdash'
+BATHY_PATHY = 'static/bathymetry/ny_gome_contours.shp'
 
 
 # Global variable to hold the full dataset
@@ -54,10 +57,16 @@ def extract_date_from_string(text):
     return date_obj
 
 
+def simplify_geometry(geometry, tolerance=0.01):
+    if geometry is not None:
+        return geometry.simplify(tolerance, preserve_topology=True)
+    return geometry
+
+
 @app.before_request
 def load_full_dataset():
     logger.info('request for full dataset...')
-    global full_dataset, first_request, latest_observation, cast_count
+    global full_dataset, first_request, latest_observation, cast_count, bathy
     if first_request:
         logger.info('first time requesting or refreshing data...')
         first_request = False
@@ -96,6 +105,10 @@ def load_full_dataset():
         latest_observation = full_dataset['time'].max().strftime('%Y-%m-%d')
         cast_count = full_dataset['profile_id'].nunique()
         # full_dataset['extracted_date'] = full_dataset['profile_id'].apply(extract_date_from_string)
+        bathy = gpd.read_file(BATHY_PATHY)
+        bathy = bathy[bathy['geometry'].notnull()]
+        bathy['geometry'] = bathy['geometry'].apply(simplify_geometry)
+
     else:
         logger.info('using cached dataset...')
 
@@ -147,16 +160,9 @@ def create_data_plots(plot_df):
     # Define the color scale
     colorscale = px.colors.sequential.Rainbow
     try:
-        # Create subplots: 3 rows, 2 columns
+
         fig = make_subplots(
             rows=3, cols=2,
-            # subplot_titles=(
-            #     'Temperature',
-            #     'Salinity',
-            #     'Density',
-            #     'Chlorophyll'
-            #     # 'Content Developed by Linus Stoltz, Data Manager CFRF'
-            # ),
             specs=[[{}, {}], [{}, {}], [{"type": "mapbox", "colspan": 2}, None]],
             vertical_spacing=0.06,
             row_heights=[0.3, 0.3, 0.353]  # Adjust the heights of the rows
@@ -186,6 +192,10 @@ def create_data_plots(plot_df):
                     line=dict(color=color, width=4),
                     hoverinfo='text',
                     hovertext=group['hover_text'],
+                    hoverlabel=dict(
+                        font=dict(
+                            size=18)  # Set the font size for hover text
+                    ),
                     name=f'{profile_id[0]}',
                     legendgroup=str(profile_id[0]),
                     showlegend=showlegend
@@ -195,9 +205,43 @@ def create_data_plots(plot_df):
             fig.update_yaxes(autorange='reversed', row=row, col=col)
 
             # Set axis titles
-            # fig.update_xaxes(title_text=titles[i], row=row, col=col)
             fig.update_xaxes(title_text=titles[i], row=row, col=col)
             fig.update_yaxes(title_text='Depth (meters)', row=row, col=col)
+
+        # Define the bathymetry values, labels, and line styles
+        subset_values = [-200, -100, -50]
+        labels = {-200: '200m', -100: '100m', -50: '50m'}
+
+        # Batch process the bathymetry lines
+        for value in subset_values:
+            shelf_break = bathy[bathy['elev_m'] == value]
+
+            all_lats = []
+            all_lons = []
+
+            for _, row in shelf_break.iterrows():
+                # Extract coordinates from the geometry
+                coords = list(row['geometry'].coords)
+                lats, lons = zip(*[(lat, lon) for lon, lat, _ in coords])
+                all_lats.extend(lats)
+                all_lons.extend(lons)
+                all_lats.append(None)  # Add None to separate lines
+                all_lons.append(None)
+
+            # Add the trace to the Plotly figure
+            fig.add_trace(go.Scattermapbox(
+                lat=all_lats,
+                lon=all_lons,
+                mode='lines',
+                line=dict(color='white', width=2),  # Use solid lines
+                hovertext=labels[value],
+                hoverinfo='text',
+                hoverlabel=dict(
+                    font=dict(
+                        size=20)  # Set the font size for hover text
+                ),
+                showlegend=False  # Change this to True if you want to show the legend for lines
+            ), row=3, col=1)
 
         # Create the map subplot
         df = plot_df.groupby('profile_id').agg(
@@ -219,6 +263,10 @@ def create_data_plots(plot_df):
                 marker=dict(size=15, color=color),
                 hoverinfo='text',
                 hovertext=row['hovertext'],
+                hoverlabel=dict(
+                    font=dict(
+                        size=20)  # Set the font size for hover text
+                ),
                 name=f'{row["first_observation"]} | Map',
                 legendgroup=str(row['first_observation']),
                 showlegend=False  # Show legend for the map marker
@@ -279,7 +327,7 @@ def create_data_plots(plot_df):
                     showarrow=False,
                     font=dict(
                         size=30,
-                         # Change the color to red
+                        # Change the color to red
                         family='Arial, sans-serif',  # Set the font family
                         weight='bold'  # Make the text bold
                     )
@@ -293,7 +341,7 @@ def create_data_plots(plot_df):
                     showarrow=False,
                     font=dict(
                         size=30,
-                         # Change the color to red
+                        # Change the color to red
                         family='Arial, sans-serif',  # Set the font family
                         weight='bold'  # Make the text bold
                     )
@@ -307,7 +355,7 @@ def create_data_plots(plot_df):
                     showarrow=False,
                     font=dict(
                         size=30,
-                         # Change the color to red
+                        # Change the color to red
                         family='Arial, sans-serif',  # Set the font family
                         weight='bold'  # Make the text bold
                     )
@@ -321,29 +369,11 @@ def create_data_plots(plot_df):
                     showarrow=False,
                     font=dict(
                         size=30,
-                         # Change the color to red
+                        # Change the color to red
                         family='Arial, sans-serif',  # Set the font family
                         weight='bold'  # Make the text bold
                     )
                 ),
-                #         dict(
-                #             text=f'There are {n_casts_window} casts during this time period, with {cast_count} casts total!',
-                #             x=0.24,
-                #             y=1.06,
-                #             xref='paper',
-                #             yref='paper',
-                #             showarrow=False,
-                #             font=dict(size=20)
-                #         ),
-                #         dict(
-                #             text=f'Most recent data: {latest_observation}',
-                #             x=0.9,
-                #             y=1.04,
-                #             xref='paper',
-                #             yref='paper',
-                #             showarrow=False,
-                #             font=dict(size=20)
-                #         ),
                 dict(
                     text=f'Content developed by Linus Stoltz, Data Manager',
                     x=0.7,

@@ -1,0 +1,519 @@
+/3.2
+(ODB.1
+	FirstRootClassName:	"Legend"
+	Roots:	2
+	Version:	32
+)
+
+(Legend.2
+	SymType:	0x01
+	LegType:	0x02
+	ClassType:	0x03
+	FieldNames:	3
+	Symbols:	4
+	Class:	31
+	Class:	32
+	Class:	33
+	Class:	34
+	Class:	35
+	Class:	36
+	Class:	37
+	Class:	38
+	Class:	39
+	Class:	40
+	Class:	41
+	Class:	42
+	Class:	43
+	StdDevs:	1.00000000000000
+	NullSym:	44
+	NullValues:	46
+	StatValues:	47
+	Precision:	-3
+)
+
+(AVStr.3
+	S:	"Elev_m"
+)
+
+(SymList.4
+	Child:	5
+	Child:	7
+	Child:	9
+	Child:	11
+	Child:	13
+	Child:	15
+	Child:	17
+	Child:	19
+	Child:	21
+	Child:	23
+	Child:	25
+	Child:	27
+	Child:	29
+)
+
+(BLnSym.5
+	Color:	6
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.6
+	Red:	0x743f
+	Green:	0xf1da
+	Blue:	0xf7ff
+)
+
+(BLnSym.7
+	Color:	8
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.8
+	Green:	0xffff
+	Blue:	0xffff
+)
+
+(BLnSym.9
+	Color:	10
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.10
+	Red:	0x52ac
+	Green:	0xe6ce
+	Blue:	0xfeff
+)
+
+(BLnSym.11
+	Color:	12
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.12
+	Red:	0x7e80
+	Green:	0xbfca
+	Blue:	0xfeff
+)
+
+(BLnSym.13
+	Color:	14
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.14
+	Red:	0x7e80
+	Green:	0xbfca
+	Blue:	0xfeff
+)
+
+(BLnSym.15
+	Color:	16
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.16
+	Red:	0x414f
+	Green:	0x9ac7
+	Blue:	0xdbff
+)
+
+(BLnSym.17
+	Color:	18
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.18
+	Red:	0xf0
+	Green:	0x7ae8
+	Blue:	0xf0ff
+)
+
+(BLnSym.19
+	Color:	20
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.20
+	Blue:	0xffff
+)
+
+(BLnSym.21
+	Color:	22
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.22
+	Blue:	0xffff
+)
+
+(BLnSym.23
+	Color:	24
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.24
+	Red:	0x170b
+	Green:	0xdb
+	Blue:	0xdc00
+)
+
+(BLnSym.25
+	Color:	26
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.26
+	Red:	0x1047
+	Green:	0xc7
+	Blue:	0xc7ff
+)
+
+(BLnSym.27
+	Color:	28
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.28
+	Red:	0xd9d
+	Green:	0x81
+	Blue:	0x8200
+)
+
+(BLnSym.29
+	Color:	30
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.30
+	Name:	"Transparent"
+)
+
+(LClass.31
+	Label:	"-50 - -10"
+	MinNum:	-50.00000000000000
+	MaxNum:	-10.00000000000000
+	Precision:	-3
+)
+
+(LClass.32
+	Label:	"-100 - -50"
+	MinNum:	-100.00000000000000
+	MaxNum:	-50.00000000000000
+	Precision:	-3
+)
+
+(LClass.33
+	Label:	"-160 - -100"
+	MinNum:	-160.00000000000000
+	MaxNum:	-100.00000000000000
+	Precision:	-3
+)
+
+(LClass.34
+	Label:	"-500 - -160"
+	MinNum:	-500.00000000000000
+	MaxNum:	-160.00000000000000
+	Precision:	-3
+)
+
+(LClass.35
+	Label:	"-1100 - -500"
+	MinNum:	-1100.00000000000000
+	MaxNum:	-500.00000000000000
+	Precision:	-3
+)
+
+(LClass.36
+	Label:	"-1600 - -1100"
+	MinNum:	-1600.00000000000000
+	MaxNum:	-1100.00000000000000
+	Precision:	-3
+)
+
+(LClass.37
+	Label:	"-2100 - -1600"
+	MinNum:	-2100.00000000000000
+	MaxNum:	-1600.00000000000000
+	Precision:	-3
+)
+
+(LClass.38
+	Label:	"-2600 - -2100"
+	MinNum:	-2600.00000000000000
+	MaxNum:	-2100.00000000000000
+	Precision:	-3
+)
+
+(LClass.39
+	Label:	"-3000 - -2600"
+	MinNum:	-3000.00000000000000
+	MaxNum:	-2600.00000000000000
+	Precision:	-3
+)
+
+(LClass.40
+	Label:	"-3400 - -3000"
+	MinNum:	-3400.00000000000000
+	MaxNum:	-3000.00000000000000
+	Precision:	-3
+)
+
+(LClass.41
+	Label:	"-3900 - -3400"
+	MinNum:	-3900.00000000000000
+	MaxNum:	-3400.00000000000000
+	Precision:	-3
+)
+
+(LClass.42
+	Label:	"-4300 - -3900"
+	MinNum:	-4300.00000000000000
+	MaxNum:	-3900.00000000000000
+	Precision:	-3
+)
+
+(LClass.43
+	IsNoData:	1
+	Label:	"No Data"
+	MaxNum:	-1.00000000000000
+	Precision:	-3
+)
+
+(BLnSym.44
+	Color:	45
+	Width:	0.10000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+	Pattern:	0.00000000000000
+)
+
+(TClr.45
+	Name:	"Transparent"
+)
+
+(NameDict.46
+)
+
+(NameDict.47
+)
+

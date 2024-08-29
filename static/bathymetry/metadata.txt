@@ -1,0 +1,471 @@
+Identification_Information:
+  Citation:
+    Citation_Information:
+      Originator: U.S. Geological Survey
+      Originator: Valerie Paskevich
+      Publication_Date: 2003
+      Title: NY_GOME_CONTOURS: New York Bight and Gulf of Maine bathymetric contours
+      Edition: 1.0
+      Geospatial_Data_Presentation_Form: vector digital data
+      Publication_Information:
+        Publication_Place: Woods Hole Field Center, Woods Hole, MA
+        Publisher: U.S. Geological Survey, Coastal and Marine Geology Program
+      Online_Linkage: http://pubs.usgs.gov/of/2003/of03-001/data/bathymetry/ny_gome_contours.zip
+      Online_Linkage: http://woodshole.er.usgs.gov/openfile/of03-001/data/bathymetry_ny_gome_contours.zip
+      Larger_Work_Citation:
+        Citation_Information:
+          Originator: L.J. Poppe
+          Originator: V.F. Paskevich
+          Originator: S.J. Williams
+          Originator: M.E. Hastings
+          Originator: J.T. Kelley
+          Originator: D.F. Belknap
+          Originator: L.G. Ward
+          Originator: D.M. FitzGerald
+          Originator: P.F. Larsen
+          Publication_Date: 2003
+          Title: Surficial Sediment Data from the Gulf of Maine, Georges Bank, and vicinity: a GIS Compilation
+          Edition: 1.0
+          Series_Information:
+            Series_Name: Open-File Report
+            Issue_Identification: 03-001
+          Publication_Information:
+            Publication_Place: Woods Hole Field Center, Woods Hole, MA
+            Publisher: U.S. Geological Survey, Coastal and Marine Geology Program
+          Other_Citation_Details: Data is released via CD-ROM media. This digital publication may also be available via the web at pubs.usgs.gov
+          Online_Linkage: http://pubs.usgs.gov/of/2003/of03-001
+          Online_Linkage: http://woodshole.er.usgs.gov/openfile/of03-001
+  Description:
+    Abstract: This bathymetric shapefile contains 10 m contours for the continental shelf and 100 m beyond the 200 m shelf edge.  The contours have been derived from the National Oceanic and Atmospheric Administration (NOAA), National Geophysical Data Center (NGDC), Coastal Relief Models volume 1 and 2.
+    Purpose: This data overlay is intended to provide a highly detailed bathymetric contour interval for the NY Bight and Gulf of Maine area.  The bathymetric shapefile contains 10 m contours for the continental shelf and 100 m intervals beyond the 200m shelf edge.  These contours will be used by the Sand and Gravel assessment project to aid in the interpretation and creation of a geologic map of the sedimentary character of the seafloor for the area.
+  Time_Period_of_Content:
+    Time_Period_Information:
+      Single_Date/Time:
+        Calendar_Date: 20021007
+    Currentness_Reference: publication date
+  Status:
+    Progress: Complete
+    Maintenance_and_Update_Frequency: None planned
+  Spatial_Domain:
+    Bounding_Coordinates:
+      West_Bounding_Coordinate: -77.208744
+      East_Bounding_Coordinate: -64.999984
+      North_Bounding_Coordinate: 45.182506
+      South_Bounding_Coordinate: 34.999990
+  Keywords:
+    Theme:
+      Theme_Keyword_Thesaurus: General
+      Theme_Keyword: U.S. Geological Survey
+      Theme_Keyword: USGS
+      Theme_Keyword: Coastal and Marine Geology Program
+      Theme_Keyword: CMGP
+      Theme_Keyword: Geographic Information System
+      Theme_Keyword: GIS
+      Theme_Keyword: ArcView shapefile
+      Theme_Keyword: polyline
+      Theme_Keyword: 10 meter shelf contours
+      Theme_Keyword: 10 m shelf contours
+      Theme_Keyword: bathymetry contours
+      Theme_Keyword: National Assessment of Marine Sand and Gravel Resources
+      Theme_Keyword: Open-File Report 03-001
+      Theme_Keyword: OFR 03-001
+    Place:
+      Place_Keyword_Thesaurus: General
+      Place_Keyword: United States East Coast
+      Place_Keyword: U.S. East Coast
+      Place_Keyword: U.S. northeast
+      Place_Keyword: New England
+      Place_Keyword: Mid-Atlantic
+      Place_Keyword: Gulf of Maine
+      Place_Keyword: New York Bight
+      Place_Keyword: Maine
+      Place_Keyword: New Hampshire
+      Place_Keyword: Massachusetts
+      Place_Keyword: Rhode Island
+      Place_Keyword: Connecticut
+      Place_Keyword: New York
+      Place_Keyword: New Jersey
+      Place_Keyword: Delaware
+      Place_Keyword: Maryland
+      Place_Keyword: Virginia
+      Place_Keyword: North Carolina
+      Place_Keyword: continental shelf
+      Place_Keyword: continental margin
+      Place_Keyword: Georges Bank
+  Access_Constraints: None
+  Use_Constraints:
+    The U.S. Geological Survey must be referenced as the originator of the dataset in any future products or research derived from these data.
+
+    This dataset is not to be used for navigation purposes.
+  Point_of_Contact:
+    Contact_Information:
+      Contact_Person_Primary:
+        Contact_Person: Valerie Paskevich
+        Contact_Organization: U.S. Geological Survey
+      Contact_Position: Information Technology Specialist
+      Contact_Address:
+        Address_Type: mailing and physical address
+        Address: 384 Woods Hole Road
+        City: Woods Hole
+        State_or_Province: MA
+        Postal_Code: 02543-1598
+        Country: USA
+      Contact_Voice_Telephone: (508) 548-8700 x2281
+      Contact_Facsimile_Telephone: (508) 457-2310
+      Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+  Browse_Graphic:
+    Browse_Graphic_File_Name: ny_gome_contours.gif
+    Browse_Graphic_File_Description: Image map showing extent and distribution of data layer coverage along the US eastcoast shapefile.
+    Browse_Graphic_File_Type: GIF
+  Data_Set_Credit: Valerie Paskevich for creating the ArcView shapefile and NOAA/NGDC for providing the source information.
+  Native_Data_Set_Environment: Microsoft Windows 2000 Version 5.1 (Build 2600) ; ESRI ArcCatalog 8.2.0.700
+Data_Quality_Information:
+  Logical_Consistency_Report: No additional checks for topological consistency were performed on this data.
+  Completeness_Report: The data is is complete in as much as the Coastal Relief Model dataset covers the US coastal zone.
+  Positional_Accuracy:
+    Horizontal_Positional_Accuracy:
+      Horizontal_Positional_Accuracy_Report: Because details of the creation of the NGDC Coastal Relief model are unknown, the accuracy of the derived bathymetric contours are unknown.
+  Lineage:
+    Source_Information:
+      Source_Citation:
+        Citation_Information:
+          Originator: National Geophysical Data Center
+          Title: Coastal Relief Model, East Coast, Vol 1
+          Edition: 1.0
+          Geospatial_Data_Presentation_Form: vector digital data
+          Series_Information:
+            Series_Name: NGDC Coastal Relief Model
+            Issue_Identification: volume 1
+          Publication_Information:
+            Publication_Place: Boulder, Co
+            Publisher: National Oceanic and Atmospheric Administration, National Geophysical Data Center
+          Online_Linkage: http://www.ngdc.noaa.gov/mgg/coastal/coastal.html
+          Online_Linkage: http://ols.nndc.noaa.gov/plolstore/plsql/olstore.prodspecific?prodnum=G01338-CDR-A0001
+      Type_of_Source_Media: CD-ROM
+      Source_Citation_Abbreviation: NGDC Coastal Relief Model, East Coast, Vol 1
+      Source_Contribution: The Volume 1 Coastal Relief Model was combined with Volume 2 to create a raster grid of the US northeast Atlantic.
+    Source_Information:
+      Source_Citation:
+        Citation_Information:
+          Originator: National Geophysical Data Center
+          Title: Coastal Relief Model, East Coast, Vol 2
+          Edition: 1.0
+          Geospatial_Data_Presentation_Form: vector digital data
+          Series_Information:
+            Series_Name: NGDC Coastal Relief Model
+            Issue_Identification: volume 2
+          Publication_Information:
+            Publication_Place: Boulder, CO
+            Publisher: National Oceanic and Atmospheric Administration (NOAA), National Geophysical Data Center (NGDC)
+          Online_Linkage: http://www.ngdc.noaa.gov/mgg/coastal/coastal.html
+          Online_Linkage: http://ols.nndc.noaa.gov/plolstore/plsql/olstore.prodspecific?prodnum=G01339-CDR-A0001
+      Type_of_Source_Media: CD-ROM
+      Source_Citation_Abbreviation: NGDC Coastal Relief Model, East Coast, Vol 2
+      Source_Contribution: A subset of the Volume 2 Coastal Relief Model was combined with Volume 1 to create a raster grid of the US northeast Atlantic north of 35 deg.
+    Process_Step:
+      Process_Description: The desired data was extracted from the Coastal Relief Model volumes 1 & 2 in the ESRI ASCII grid format
+      Source_Used_Citation_Abbreviation: Coastal Relief Model, East Coast vol 1
+      Source_Used_Citation_Abbreviation: Coastal Relief Model, East Coast vol 2
+      Process_Date: 20010906
+      Source_Produced_Citation_Abbreviation: crmvol1.asc
+      Source_Produced_Citation_Abbreviation: crmvol2.asc
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+    Process_Step:
+      Process_Description: The retrieved data was combined to create a PCI Remote Sensing image database and stored in a 16-bit image channel.
+      Source_Used_Citation_Abbreviation: crmvol1.asc
+      Source_Used_Citation_Abbreviation: crmvol2.asc
+      Process_Date: 20010906
+      Source_Produced_Citation_Abbreviation: bathymetry\NGDC_crm\crmvol12\crm3sec.pix
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+    Process_Step:
+      Process_Description: The CRM PCI database was processed to extract a subset of the combined dataset.  A 5X5 low-pass smoothing filter was applied to the image data to reduce the gridding artifacts.
+      Source_Used_Citation_Abbreviation: bathymetry\NGDC_crm\crmvol12\crm3sec.pix
+      Process_Date: 20020806
+      Source_Produced_Citation_Abbreviation: seagrd.pix
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+    Process_Step:
+      Process_Description: Two additional 16 bit channels were added to the newly created PCI database containing the data subset.  The CRM data was processed to create separate land and sea image channels by replacing the values above and below the desired data level with -32768.
+      Source_Used_Citation_Abbreviation: seagrd.pix
+      Process_Date: 20020806
+      Source_Produced_Citation_Abbreviation: seagrd.pix
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+    Process_Step:
+      Process_Description: An image mask of the bathymetry data was created.  The XPACE CONTOUR program was run on the CRM data to create a 100m contour segment of the original data.  The CRM image was then subsetted to create a bathymetry image with values between 11-200 meters and contoured at 10m.  The created contours were then thinned by 50% (VECSEL).
+      Source_Used_Citation_Abbreviation: seagrd.pix
+      Process_Date: 20020806
+      Source_Produced_Citation_Abbreviation: seagrd.pix
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+    Process_Step:
+      Process_Description: All contours greater than 200 m were removed from the 10 m contour segment to remove redundancy of the 100 m contours before combining the 10 m and 100 m contours as one segment.
+      Source_Used_Citation_Abbreviation: seagrd.pix
+      Process_Date: 20020806
+      Source_Produced_Citation_Abbreviation: seagrd.pix
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+    Process_Step:
+      Process_Description: The bathymetry contours were viewed and edited using Imageworks to verify and improve the dataset.  Small contours that were believed to be artifacts of the CRM gridded data were removed.  Vector segments that could be combined to produce complete polylines were joined.
+      Source_Used_Citation_Abbreviation: seagrd.pix
+      Process_Date: 20020813
+      Source_Produced_Citation_Abbreviation: seagrd.pix
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+    Process_Step:
+      Process_Description: The final bathymetry contours were exported from the PCI database to an ArcView shapefile.
+      Source_Used_Citation_Abbreviation: seagrd.pix
+      Process_Date: 20020927
+      Source_Produced_Citation_Abbreviation: gome_contours.dbf
+      Source_Produced_Citation_Abbreviation: gome_contours.shp
+      Source_Produced_Citation_Abbreviation: gome_contours.shx
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+    Process_Step:
+      Process_Description: The shapefile was projected from the original WGS84 to NAD83/GRS_1980 for consistency with other datasets.
+      Source_Used_Citation_Abbreviation: gome_contours.dbf
+      Source_Used_Citation_Abbreviation: gome_contours.shp
+      Source_Used_Citation_Abbreviation: gome_contours.shx
+      Process_Date: 20020927
+      Source_Produced_Citation_Abbreviation: ny_gome_contours.dbf
+      Source_Produced_Citation_Abbreviation: ny_gome_contours.shp
+      Source_Produced_Citation_Abbreviation: ny_gome_contours.shx
+      Process_Contact:
+        Contact_Information:
+          Contact_Person_Primary:
+            Contact_Person: Valerie Paskevich
+            Contact_Organization: U.S. Geological Survey
+          Contact_Position: Information Technology Specialist
+          Contact_Address:
+            Address_Type: mailing and physical address
+            Address: 384 Woods Hole Road
+            City: Woods Hole
+            State_or_Province: MA
+            Postal_Code: 02543-1598
+            Country: USA
+          Contact_Voice_Telephone: (508) 548-8700 x2281
+          Contact_Facsimile_Telephone: (508) 457-2310
+          Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+Spatial_Data_Organization_Information:
+  Direct_Spatial_Reference_Method: Vector
+  Point_and_Vector_Object_Information:
+    SDTS_Terms_Description:
+      SDTS_Point_and_Vector_Object_Type: String
+      Point_and_Vector_Object_Count: 10489
+Spatial_Reference_Information:
+  Horizontal_Coordinate_System_Definition:
+    Geographic:
+      Latitude_Resolution: 0.00001
+      Longitude_Resolution: 0.00001
+      Geographic_Coordinate_Units: Decimal degrees
+    Geodetic_Model:
+      Horizontal_Datum_Name: North American Datum of 1983
+      Ellipsoid_Name: Geodetic Reference System 80
+      Semi-major_Axis: 6378137.000000
+      Denominator_of_Flattening_Ratio: 298.257222
+  Vertical_Coordinate_System_Definition:
+    Altitude_System_Definition:
+      Altitude_Resolution: 0.000008
+      Altitude_Encoding_Method: Explicit elevation coordinate included with horizontal coordinates
+Entity_and_Attribute_Information:
+  Detailed_Description:
+    Entity_Type:
+      Entity_Type_Label: ny_gome_contours.dbf
+      Entity_Type_Definition: Shapefile Attribute Table
+      Entity_Type_Definition_Source: ESRI
+    Attribute:
+      Attribute_Label: FID
+      Attribute_Definition: Internal feature number.
+      Attribute_Definition_Source: ESRI
+      Attribute_Domain_Values:
+        Unrepresentable_Domain: Sequential unique whole numbers that are automatically generated.
+    Attribute:
+      Attribute_Label: Shape
+      Attribute_Definition: Feature geometry.
+      Attribute_Definition_Source: ESRI
+      Attribute_Domain_Values:
+        Unrepresentable_Domain: Coordinates defining the features.
+    Attribute:
+      Attribute_Label: elev_m
+      Attribute_Definition: Depth values (elevation) recorded as meter values.  Depths are recorded as negative values.
+      Attribute_Definition_Source: Valerie Paskevich
+      Attribute_Domain_Values:
+        Range_Domain:
+          Range_Domain_Minimum: -4300
+          Range_Domain_Maximum: -10
+          Attribute_Units_of_Measure: meters
+          Attribute_Measurement_Resolution: 10
+Distribution_Information:
+  Distributor:
+    Contact_Information:
+      Contact_Person_Primary:
+        Contact_Person: Valerie Paskevich
+        Contact_Organization: U.S. Geological Survey
+      Contact_Position: GIS Coordinator
+      Contact_Address:
+        Address_Type: mailing and physical address
+        Address: 384 Woods Hole Road
+        City: Woods Hole
+        State_or_Province: MA
+        Postal_Code: 02543-1598
+        Country: USA
+      Contact_Voice_Telephone: (508) 548-8700 x2281
+      Contact_Facsimile_Telephone: (508) 457-2310
+      Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+  Resource_Description: Downloadable Data; National Assessment of Marine Sand and Gravel Resources: ny_gome_contours.shp
+  Distribution_Liability: Although this data set has been used by the U.S. Geological Survey, no warranty, expressed or implied, is made by the USGS as to the accuracy of the data and/or related materials. The act of distribution shall not constitute any such warranty, and no responsibility is assumed by the USGS in the use of these data or related materials.  The act of distribution shall not constitute any such warranty, and no responsibility is assumed by the USGS in the use of these data or related materials.
+  Standard_Order_Process:
+    Digital_Form:
+      Digital_Transfer_Information:
+        Format_Name: ArcView shapefile
+        Format_Version_Number: 3.2
+        Format_Specification: ESRI polyline shapefile
+        File_Decompression_Technique: zip
+        Transfer_Size: 40.240
+      Digital_Transfer_Option:
+        Offline_Option:
+          Offline_Media: CD-ROM
+          Recording_Capacity:
+            Recording_Density: 650
+            Recording_Density_Units: Mbytes
+          Compatibility_Information: The user must have a computer system with a CD-ROM available. To browse the information contained on this CD-ROM, the user must have a current WWW browser available. The user must also have software installed on their computer to unzip the archived file.
+  Technical_Prerequisites: The data is available in ArcView shapefile format. The user must have ArcView 3.0 or greater software to read and process the data file. In lieu of ArcView, the user may utilize another GIS application package capable of importing data.
+Metadata_Reference_Information:
+  Metadata_Date: 20030218
+  Metadata_Contact:
+    Contact_Information:
+      Contact_Person_Primary:
+        Contact_Person: Valerie Paskevich
+        Contact_Organization: U.S. Geological Survey
+      Contact_Address:
+        Address_Type: mailing and physical address
+        Address: 384 Woods Hole Road
+        City: Woods Hole
+        State_or_Province: MA
+        Postal_Code: 02543-1598
+        Country: USA
+      Contact_Voice_Telephone: (508) 548-8700 x2281
+      Contact_Facsimile_Telephone: (508) 457-2310
+      Contact_Electronic_Mail_Address: vpaskevich@usgs.gov
+  Metadata_Standard_Name: FGDC Content Standards for Digital Geospatial Metadata
+  Metadata_Standard_Version: FGDC-STD-001-1998
+  Metadata_Time_Convention: local time
+  Metadata_Access_Constraints: None
+  Metadata_Use_Constraints: None
+  Metadata_Extensions:
+    Online_Linkage: http://www.esri.com/metadata/esriprof80.html
+    Profile_Name: ESRI Metadata Profile
