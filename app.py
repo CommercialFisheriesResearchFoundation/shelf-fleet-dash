@@ -34,6 +34,7 @@ app.config['APPLICATION_ROOT'] = '/shelfdash'
 # Global variable to hold the full dataset
 full_dataset = None
 first_request = True
+mapbox_access_token = 'pk.eyJ1IjoibHN0b2x0eiIsImEiOiJjbTBmY2hmcGowdHh1MndvaWlvejZpNHlyIn0.BLC9SltZf5sYCGGURAWh9w'  # free public token
 
 
 def truncate_at_first_space(col_name):
@@ -134,83 +135,31 @@ def filter_data():
         return jsonify({'error': str(e)}), 500
 
 
-def create_data_plots_working(plot_df):
-    #! Don't ice this function
-    # Normalize the time_numeric column to a range between 0 and 1
-    plot_df['time_normalized'] = (plot_df['time_numeric'] - plot_df['time_numeric'].min()) / \
-                                 (plot_df['time_numeric'].max() -
-                                  plot_df['time_numeric'].min())
-
-    # Define the color scale
-    colorscale = px.colors.sequential.Rainbow
-    # Create subplots: 2 rows, 2 columns
-    fig = make_subplots(rows=2, cols=2, subplot_titles=(
-        'Temperature',
-        'Salinity',
-        'Density',
-        'Chlorophyll'
-    ))
-
-    # List of variables to plot
-    variables = ['temperature', 'absolute_salinity', 'density', 'chlorophyll']
-    titles = ['Celcius', 'Absolute Salinity', 'Density', '[Chl-a] ug/L']
-
-    # Add traces for each variable
-    for i, variable in enumerate(variables):
-        row = i // 2 + 1
-        col = i % 2 + 1
-        for sample_date, group in plot_df.groupby(['profile_id', 'sample_date']):
-            color_idx = int(group['time_normalized'].iloc[0]
-                            * (len(colorscale) - 1))
-            fig.add_trace(go.Scatter(
-                x=group[variable],
-                y=group['sea_pressure'],
-                mode='lines',
-                line=dict(color=colorscale[color_idx], width=4),
-                name=f' {sample_date[1]} | {variable}'
-            ), row=row, col=col)
-
-        # Invert the y-axis for the first subplot
-
-        fig.update_yaxes(autorange='reversed', row=row, col=col)
-
-        # Set axis titles
-        fig.update_xaxes(title_text=titles[i], row=row, col=col)
-        fig.update_yaxes(title_text='Depth (meters)', row=row, col=col)
-
-    # Set plot title and layout
-    fig.update_layout(
-        # title='Oceanographic Casts Shelf Research Fleet',
-        height=1200,
-        width=1600,
-        showlegend=True
-    )
-    return fig
-
-
 def create_data_plots(plot_df):
     # Normalize the time_numeric column to a range between 0 and 1
     plot_df['time_normalized'] = (plot_df['time_numeric'] - plot_df['time_numeric'].min()) / \
                                  (plot_df['time_numeric'].max() -
                                   plot_df['time_numeric'].min())
-    plot_df = plot_df[(plot_df['profile_orientation'] == 1) & (plot_df['sea_pressure'] > 1)]
-    plot_df['hover_text'] = plot_df.apply(lambda row: f"Date: {row['first_observation']}", axis=1)
+    plot_df = plot_df[(plot_df['profile_orientation'] == 1)
+                      & (plot_df['sea_pressure'] > 1)]
+    plot_df['hover_text'] = plot_df.apply(
+        lambda row: f"Date: {row['first_observation']}", axis=1)
     # Define the color scale
     colorscale = px.colors.sequential.Rainbow
     try:
         # Create subplots: 3 rows, 2 columns
         fig = make_subplots(
             rows=3, cols=2,
-            subplot_titles=(
-                'Temperature',
-                'Salinity',
-                'Density',
-                'Chlorophyll',
-                ' '
-            ),
+            # subplot_titles=(
+            #     'Temperature',
+            #     'Salinity',
+            #     'Density',
+            #     'Chlorophyll'
+            #     # 'Content Developed by Linus Stoltz, Data Manager CFRF'
+            # ),
             specs=[[{}, {}], [{}, {}], [{"type": "mapbox", "colspan": 2}, None]],
-            vertical_spacing=0.08,
-            row_heights=[0.4, 0.4, 0.6]  # Adjust the heights of the rows
+            vertical_spacing=0.06,
+            row_heights=[0.3, 0.3, 0.353]  # Adjust the heights of the rows
         )
 
         # List of variables to plot
@@ -246,13 +195,19 @@ def create_data_plots(plot_df):
             fig.update_yaxes(autorange='reversed', row=row, col=col)
 
             # Set axis titles
-            fig.update_xaxes(title_text=titles[i], row=row, col=col)
+            # fig.update_xaxes(title_text=titles[i], row=row, col=col)
             fig.update_xaxes(title_text=titles[i], row=row, col=col)
             fig.update_yaxes(title_text='Depth (meters)', row=row, col=col)
 
         # Create the map subplot
         df = plot_df.groupby('profile_id').agg(
-            {'first_observation': 'first', 'latitude': 'first', 'longitude': 'first'}).reset_index()
+            {'first_observation': 'first', 'latitude': 'first',
+             'longitude': 'first', 'sea_pressure': 'max',
+             'temperature': 'mean', 'absolute_salinity': 'mean'}).reset_index()
+        df['hovertext'] = df.apply(
+            lambda row: f"Date: {row['first_observation']}<br> {round(row['latitude'],6)}, {round(row['longitude'],6)}<br>Depth = {round(row['sea_pressure'],2)} m<br>Mean T = {round(row['temperature'],2)} C<br> Mean S = {round(row['absolute_salinity'],2)} PSU",
+            axis=1
+        )
         for profile_id, row in df.iterrows():
             color_idx = int(plot_df[plot_df['first_observation'] == row['first_observation']]
                             ['time_normalized'].iloc[0] * (len(colorscale) - 1))
@@ -262,7 +217,8 @@ def create_data_plots(plot_df):
                 lon=[row['longitude']],
                 mode='markers',
                 marker=dict(size=15, color=color),
-                hoverinfo='lat+lon',
+                hoverinfo='text',
+                hovertext=row['hovertext'],
                 name=f'{row["first_observation"]} | Map',
                 legendgroup=str(row['first_observation']),
                 showlegend=False  # Show legend for the map marker
@@ -273,16 +229,20 @@ def create_data_plots(plot_df):
         center_lon = df['longitude'].mean()
         # quick stats for the figure
         n_casts_window = plot_df['profile_id'].nunique()
-        
+
         fig.update_layout(
+            font=dict(
+                size=18
+            ),  #
             mapbox=dict(
+                accesstoken=mapbox_access_token,
                 domain={'x': [0, 1], 'y': [0, 0.33]},
-                style="open-street-map",
+                style="mapbox://styles/mapbox/satellite-v9",
                 center={"lat": center_lat, "lon": center_lon},
-                zoom=6
+                zoom=7
             ),
             # clickmode='event+select',
-            height=2000,
+            height=3000,
             width=1600,
             showlegend=True,
             title_text=f'There are {n_casts_window} casts during this time period, with {cast_count} casts total! | Latest data: {latest_observation}',
@@ -307,45 +267,104 @@ def create_data_plots(plot_df):
                 xanchor="left",
                 y=1.1,
                 yanchor="top"
-            )])
-        #     annotations=[
-        #         # dict(text='Temperature', x=0.25, y=0.96, xref='paper', yref='paper', showarrow=False, font=dict(size=16)),
-        #         dict(text='Salinity', x=0.75, y=0.96, xref='paper', yref='paper', showarrow=False, font=dict(size=16)),
-        #         dict(text='Density', x=0.25, y=0.62, xref='paper', yref='paper', showarrow=False, font=dict(size=16)),
-        #         dict(text='Chlorophyll', x=0.75, y=0.62, xref='paper', yref='paper', showarrow=False, font=dict(size=16)),
-        #         dict(
-        #             text=f'There are {n_casts_window} casts during this time period, with {cast_count} casts total!',
-        #             x=0.24,
-        #             y=1.06,
-        #             xref='paper',
-        #             yref='paper',
-        #             showarrow=False,
-        #             font=dict(size=20)
-        #         ),
-        #         dict(
-        #             text=f'Most recent data: {latest_observation}',
-        #             x=0.9,
-        #             y=1.04,
-        #             xref='paper',
-        #             yref='paper',
-        #             showarrow=False,
-        #             font=dict(size=20)
-        #         ),
-        #         dict(
-        #             text=f'Content developed by Linus Stoltz, Data Manager CFRF',
-        #             x=0.7,
-        #             y=0.001,
-        #             xref='paper',
-        #             yref='paper',
-        #             showarrow=False,
-        #             font=dict(size=16)
-        #         )
-        #     ]
-        # )
+            )],
+            annotations=[
+
+                dict(
+                    text='Temperature',
+                    x=0.16,
+                    y=1.02,
+                    xref='paper',
+                    yref='paper',
+                    showarrow=False,
+                    font=dict(
+                        size=30,
+                         # Change the color to red
+                        family='Arial, sans-serif',  # Set the font family
+                        weight='bold'  # Make the text bold
+                    )
+                ),
+                dict(
+                    text='Salinity',
+                    x=0.82,
+                    y=1.02,
+                    xref='paper',
+                    yref='paper',
+                    showarrow=False,
+                    font=dict(
+                        size=30,
+                         # Change the color to red
+                        family='Arial, sans-serif',  # Set the font family
+                        weight='bold'  # Make the text bold
+                    )
+                ),
+                dict(
+                    text='Density',
+                    x=0.16,
+                    y=0.68,
+                    xref='paper',
+                    yref='paper',
+                    showarrow=False,
+                    font=dict(
+                        size=30,
+                         # Change the color to red
+                        family='Arial, sans-serif',  # Set the font family
+                        weight='bold'  # Make the text bold
+                    )
+                ),
+                dict(
+                    text='Chlorophyll',
+                    x=0.82,
+                    y=0.68,
+                    xref='paper',
+                    yref='paper',
+                    showarrow=False,
+                    font=dict(
+                        size=30,
+                         # Change the color to red
+                        family='Arial, sans-serif',  # Set the font family
+                        weight='bold'  # Make the text bold
+                    )
+                ),
+                #         dict(
+                #             text=f'There are {n_casts_window} casts during this time period, with {cast_count} casts total!',
+                #             x=0.24,
+                #             y=1.06,
+                #             xref='paper',
+                #             yref='paper',
+                #             showarrow=False,
+                #             font=dict(size=20)
+                #         ),
+                #         dict(
+                #             text=f'Most recent data: {latest_observation}',
+                #             x=0.9,
+                #             y=1.04,
+                #             xref='paper',
+                #             yref='paper',
+                #             showarrow=False,
+                #             font=dict(size=20)
+                #         ),
+                dict(
+                    text=f'Content developed by Linus Stoltz, Data Manager',
+                    x=0.7,
+                    y=0.001,
+                    xref='paper',
+                    yref='paper',
+                    showarrow=False,
+                    font=dict(
+                        size=16,
+                        color='white',  # Change the color to red
+                        family='Arial, sans-serif',  # Set the font family
+                        weight='bold'  # Make the text bold
+                    )
+                )
+            ]
+        )
 
     except Exception as e:
         logger.error('error: %s', e)
     return fig
 
+
 if __name__ == '__main__':
-    app.run(debug=False, port=5000)
+    app.run(debug=True, port=5000)

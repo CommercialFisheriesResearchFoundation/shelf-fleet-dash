@@ -9,119 +9,182 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
-        body {
-            font-size: 1.2em;
-            /* Increase the base font size */
+        body, html {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
         }
 
         #top-bar {
             background-color: #0b285b;
             height: 70px;
-            position: relative;
+            width: 100%; /* Ensure the top-bar spans 100% width */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the content horizontally */
+            color: white;
+        }
+
+        #top-bar .container {
+            max-width: 1200px;
+            width: 100%; /* Ensure the container spans 100% width */
+            padding-left: 20px; /* Adjust padding to align with other text */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the content horizontally */
         }
 
         #logo {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            height: 150px;
+            height: 50px;
+            margin-right: 20px;
         }
 
         h1 {
-            color: white;
-            position: absolute;
-            top: 15px;
-            left: 80px;
             margin: 0;
+            font-size: 2.2em;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .info-paragraph {
+            width: 100%; /* Ensure the paragraph spans the full width of the container */
+            margin-bottom: 20px;
+            font-size: 1.2em;
         }
 
         #plot {
             width: 100%;
-            height: 1500px;
+            height: calc(100vh - 400px); /* Adjust height based on content */
         }
 
-        /* Increase font size for labels and input boxes */
         label {
-            font-size: 1.5em;
+            font-size: 1.8em; /* Increase font size */
         }
 
-        input[type="text"] {
-            font-size: 1.5em;
-            padding: 5px;
-            display: block;
-            width: 10%;
+        input[type="date"], .flatpickr-input {
+            font-size: 1.8em; /* Increase font size */
+            padding: 10px; /* Increase padding */
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 500px; /* Increase max-width */
             box-sizing: border-box;
-        }
-
-        input[type="date"] {
-            font-size: 1.5em;
-            display: block;
-            position: relative;
-            padding: 5px;
-            width: 5%;
-            box-sizing: border-box;
+            height: auto; /* Ensure height is auto to accommodate larger font size */
         }
 
         button {
-            font-size: 1.5em;
-            padding: 10px 50px;
+            font-size: 1.8em; /* Increase font size */
+            padding: 10px 20px; /* Increase padding */
+            margin-top: 10px;
+            width: 100%;
+            max-width: 500px; /* Increase max-width */
         }
-        .info-paragraph {
-        max-width: 600px; /* Adjust this value as needed */
-        margin-bottom: 20px;
-    }
-    .body-style {
-        font-family: Arial, sans-serif;
-        margin: 2%;
-        padding: 0;
-        background-color: #f0f0f0;
-    }
-    .container {
-        padding-left: 100px; /* Adjust this value as needed */
-    }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px; /* Increase gap between form elements */
+            margin-bottom: 40px; /* Increase margin-bottom */
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px; /* Increase padding for the container */
+            }
+
+            #top-bar .container {
+                padding-left: 15px; /* Adjust padding for smaller screens */
+            }
+
+            h1 {
+                font-size: 2.5em; /* Increase font-size for h1 */
+            }
+
+            #plot {
+                height: calc(100vh - 400px); /* Adjust height to accommodate larger elements */
+            }
+
+            form {
+                align-items: center;
+            }
+
+            button, input[type="date"], .flatpickr-input {
+                width: 90%;
+                max-width: 500px; /* Ensure the max-width is consistent */
+                font-size: 1.8em; /* Ensure the font size is consistent */
+                padding: 10px; /* Ensure the padding is consistent */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                margin: 0;
+                font-size: 2em;
+            }
+
+            .info-paragraph {
+                font-size: 1em;
+            }
+
+            label, button, input[type="date"], .flatpickr-input {
+                font-size: 1.8em; /* Ensure the font size is consistent */
+                padding: 10px; /* Ensure the padding is consistent */
+            }
+
+            #plot {
+                height: calc(100vh - 550px);
+            }
+        }
     </style>
 </head>
 
-<body class=".body-style">
-    <div id="top-bar"></div> <!-- Blue bar at the top -->
-    <br><br> <!-- Add some space below the blue bar -->
-    <!-- <img id="logo" src="https://ondeckdata.com/cfrf_erddap_logo.svg" alt="CFRF Logo"> -->
-    <h1>CFRF | WHOI Shelf Research Fleet</h1>
-    <h2>About</h2>
-    <p class="info-paragraph"> This viewer displays real time CTD casts collected by commericial fishermen as part of the <a
-            href="https://www.cfrfoundation.org/shelf-research-fleet" style="color: blue; text-decoration: none;">
-            CFRF | WHOI Shelf Research Fleet. </a> <br><br>
-        These figures are showing the temperature, salinity, density,
-        chlorophyll (if applicable) profiles and the corresponding location. Observations are colored by time with
-        more recent observations appearing as warmer colors and earlier data as cooler colors.
-        To access the data check out our <a
-            href="https://erddap.ondeckdata.com/erddap/info/index.html?page=1&itemsPerPage=1000"
-            style="color: blue; text-decoration: underline;">ERDDAP server.</a>
-    </p> <br><br> 
-    <h2>How to use</h2>
-    <p class="info-paragraph">  Tap or click the start and end date range then click Plot! All casts from that range will be shown below.
-        Isolate specific casts by double clicking on the legend entry. To add specific profiles to the plot single click
-        on legend entries one at a time to toggle profiles on and off the plot frame. Double clicking a legend entry or
-        clicking Plot! again will reset the display to the time range. To save a specifc plot image to your desktop,
-        click the camera icon from the action bar. The legend can be toggled with the Show and Hide buttons. </p>
-    <form id="date-form">
-        <br>
-        <label for="start_date">Start Date:</label>
-        <br>
-        <input type="date" id="start_date" name="start_date">
+<body>
+    <div id="top-bar">
+        <div class="container">
+            <img id="logo" src="https://ondeckdata.com/cfrf_erddap_logo.svg" alt="CFRF Logo">
+            <h1>CFRF | WHOI Shelf Research Fleet</h1>
+        </div>
+    </div>
 
-        <br>
-        <label for="end_date">End Date:</label>
-        <br>
-        <input type="date" id="end_date" name="end_date">
-        <br>
-        <button type="submit">Plot!</button>
-        <!-- <button id="resetButton">Reset to Last 2 Weeks</button> -->
+    <div class="container">
+        <h2>About</h2>
+        <p class="info-paragraph">
+            This viewer displays real-time CTD casts collected by commercial fishermen as part of the 
+            <a href="https://www.cfrfoundation.org/shelf-research-fleet" style="color: blue; text-decoration: none;">
+                CFRF | WHOI Shelf Research Fleet.
+            </a> <br><br>
+            These figures show the temperature, salinity, density, and chlorophyll (if applicable) profiles, and the corresponding location. Observations are colored by time, with more recent observations appearing as warmer colors and earlier data as cooler colors. 
+            To access the data, check out our 
+            <a href="https://erddap.ondeckdata.com/erddap/info/index.html?page=1&itemsPerPage=1000" style="color: blue; text-decoration: underline;">
+                ERDDAP server.
+            </a>
+        </p>
 
-    </form>
+        <h2>How to use</h2>
+        <p class="info-paragraph">
+            Tap or click the start and end date range, then click Plot! All casts from that range will be shown below. Isolate specific casts by double-clicking on the legend entry. To add specific profiles to the plot, single-click on legend entries one at a time to toggle profiles on and off the plot frame. Double-clicking a legend entry or clicking Plot! again will reset the display to the time range. To save a specific plot image to your desktop, click the camera icon from the action bar. The legend can be toggled with the Show and Hide buttons.
+        </p>
 
-    <div id="plot"></div> <!-- Ensure the plot div is defined -->
-    
+        <form id="date-form">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date">
+
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date">
+
+            <button type="submit">Plot!</button>
+        </form>
+
+        <div id="plot"></div> <!-- Ensure the plot div is defined -->
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Calculate the current date and the date two weeks ago
@@ -154,7 +217,6 @@
         });
 
         document.getElementById('date-form').addEventListener('submit', function (event) {
-            console.log('Form submitted');
             event.preventDefault();
             const formData = new FormData(event.target);
             const start_date = formData.get('start_date');
@@ -162,13 +224,6 @@
 
             fetchAndPlotData(start_date, end_date);
         });
-        // document.getElementById('resetButton').addEventListener('click', function (event) {
-        //     console.log('Reset button clicked');
-        //     const currentDate = new Date();
-        //     const twoWeeksAgo = new Date();
-        //     twoWeeksAgo.setDate(currentDate.getDate() - 14);
-        //     fetchAndPlotData(formatDate(twoWeeksAgo), formatDate(currentDate));
-        // });
 
         function fetchAndPlotData(start_date, end_date) {
             fetch('/shelfdash/filter_data', {
