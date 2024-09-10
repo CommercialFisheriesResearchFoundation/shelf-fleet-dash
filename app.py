@@ -81,7 +81,6 @@ def load_full_dataset():
                 response="nc",
             )
             e.dataset_id = 'shelf_fleet_profiles_1m_binned'
-            e.constraints = {'profile_orientation=': 1}
             full_dataset = e.to_pandas()
         except Exception as e:
             logger.error(f'Error connecting to ERDDAP server: {e}')
@@ -153,8 +152,6 @@ def create_data_plots(plot_df):
     plot_df['time_normalized'] = (plot_df['time_numeric'] - plot_df['time_numeric'].min()) / \
                                  (plot_df['time_numeric'].max() -
                                   plot_df['time_numeric'].min())
-    plot_df = plot_df[(plot_df['profile_orientation'] == 1)
-                      & (plot_df['sea_pressure'] > 1)]
     plot_df['hover_text'] = plot_df.apply(
         lambda row: f"Date: {row['first_observation']}", axis=1)
     # Define the color scale
