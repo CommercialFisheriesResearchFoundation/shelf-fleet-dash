@@ -279,6 +279,7 @@ def create_data_plots(plot_df):
         n_casts_window = plot_df['profile_id'].nunique()
 
         fig.update_layout(
+            autosize=True, # Automatically adjust the size of the figure 
             font=dict(
                 size=18
             ),  #
@@ -291,7 +292,7 @@ def create_data_plots(plot_df):
             ),
             # clickmode='event+select',
             height=3000,
-            width=1600,
+            width=1410,
             showlegend=True,
             title_text=f'There are {n_casts_window} casts during this time period, with {cast_count} casts total! | Latest data: {latest_observation}',
             updatemenus=[dict(

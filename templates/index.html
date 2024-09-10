@@ -20,26 +20,16 @@
 
         #top-bar {
             background-color: #0b285b;
-            height: 70px;
+            padding: 1em 0;
             width: 100%; /* Ensure the top-bar spans 100% width */
             display: flex;
             align-items: center;
             justify-content: center; /* Center the content horizontally */
             color: white;
-            width: 100%;
-        }
-
-        #top-bar .container {
-            max-width: 1200px;
-            width: 100%; /* Ensure the container spans 100% width */
-            padding-left: 20px; /* Adjust padding to align with other text */
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Center the content horizontally */
         }
 
         #logo {
-            height: 50px;
+            height: 70px;
             margin-right: 20px;
         }
 
@@ -49,10 +39,23 @@
             text-align: center;
         }
 
+        .img-container {
+            display: flex;
+            align-items: center;
+        }
+
         .container {
-            max-width: 1200px;
+            width: 1410px;
             margin: auto;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 4em;
+        }
+
+        .text-container {
+            display: flex;
+            flex-direction: column;
         }
 
         .info-paragraph {
@@ -149,40 +152,42 @@
 
 <body>
     <div id="top-bar">
-        <div class="container">
+        <div class="img-container">
             <img id="logo" src="https://ondeckdata.com/cfrf_erddap_logo.svg" alt="CFRF Logo">
             <h1>CFRF | WHOI Shelf Research Fleet</h1>
         </div>
     </div>
 
     <div class="container">
-        <h2>About</h2>
-        <p class="info-paragraph">
-            This viewer displays real-time CTD casts collected by commercial fishermen as part of the 
-            <a href="https://www.cfrfoundation.org/shelf-research-fleet" style="color: blue; text-decoration: none;">
-                CFRF | WHOI Shelf Research Fleet.
-            </a> <br><br>
-            These figures show the temperature, salinity, density, and chlorophyll (if applicable) profiles, and the corresponding location. Observations are colored by time, with more recent observations appearing as warmer colors and earlier data as cooler colors. 
-            To access the data, check out our 
-            <a href="https://erddap.ondeckdata.com/erddap/info/index.html?page=1&itemsPerPage=1000" style="color: blue; text-decoration: underline;">
-                ERDDAP server.
-            </a>
-        </p>
-
-        <h2>How to use</h2>
-        <p class="info-paragraph">
-            Tap or click the start and end date range, then click Plot! All casts from that range will be shown below. Isolate specific casts by double-clicking on the legend entry. To add specific profiles to the plot, single-click on legend entries one at a time to toggle profiles on and off the plot frame. Double-clicking a legend entry or clicking Plot! again will reset the display to the time range. To save a specific plot image to your desktop, click the camera icon from the action bar. The legend can be toggled with the Show and Hide buttons.
-        </p>
-
-        <form id="date-form">
-            <label for="start_date">Start Date:</label>
-            <input type="date" id="start_date" name="start_date">
-
-            <label for="end_date">End Date:</label>
-            <input type="date" id="end_date" name="end_date">
-
-            <button type="submit">Plot!</button>
-        </form>
+        <div class="text-container">
+            <h2>About</h2>
+            <p class="info-paragraph">
+                This viewer displays real-time CTD casts collected by commercial fishermen as part of the 
+                <a href="https://www.cfrfoundation.org/shelf-research-fleet" style="color: blue; text-decoration: none;">
+                    CFRF | WHOI Shelf Research Fleet.
+                </a> <br><br>
+                These figures show the temperature, salinity, density, and chlorophyll (if applicable) profiles, and the corresponding location. Observations are colored by time, with more recent observations appearing as warmer colors and earlier data as cooler colors. 
+                To access the data, check out our 
+                <a href="https://erddap.ondeckdata.com/erddap/info/index.html?page=1&itemsPerPage=1000" style="color: blue; text-decoration: underline;">
+                    ERDDAP server.
+                </a>
+            </p>
+    
+            <h2>How to use</h2>
+            <p class="info-paragraph">
+                Tap or click the start and end date range, then click Plot! All casts from that range will be shown below. Isolate specific casts by double-clicking on the legend entry. To add specific profiles to the plot, single-click on legend entries one at a time to toggle profiles on and off the plot frame. Double-clicking a legend entry or clicking Plot! again will reset the display to the time range. To save a specific plot image to your desktop, click the camera icon from the action bar. The legend can be toggled with the Show and Hide buttons.
+            </p>
+    
+            <form id="date-form">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date">
+    
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date">
+    
+                <button type="submit">Plot!</button>
+            </form>
+        </div>
 
         <div id="plot"></div> <!-- Ensure the plot div is defined -->
     </div>
@@ -243,6 +248,25 @@
                     }
                     const plotData = JSON.parse(data.plot_data);
                     Plotly.newPlot('plot', plotData.data, plotData.layout);
+                    window.onresize = function() {
+                    // Get the current window width
+                    let newWidth = window.innerWidth;
+
+                    // Set a width cap (e.g., 1200px)
+                    if (newWidth > 1410) {
+                        newWidth = 1410;  // Cap the width at 1200px
+                    }
+                    
+                    // Cap the width at 480px
+                    if (newWidth < 1400) {
+                        newWidth = 1400;  
+                    }
+
+                    // Update the plot width with the capped value
+                    Plotly.relayout('plot', {
+                        'width': newWidth
+                    });
+                };
                 })
                 .catch(error => {
                     console.error('Error:', error);
