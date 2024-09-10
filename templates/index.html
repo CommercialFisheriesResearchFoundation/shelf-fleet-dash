@@ -16,17 +16,18 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             width: 100%;
+            
         }
 
         #top-bar {
             background-color: #0b285b;
             padding: 1em 0;
-            width: 100%; 
+            width: 100vw; 
             display: flex;
             align-items: center;
             justify-content: center; 
             color: white;
-            position: fixed; 
+            position: relative; 
             top: 0;
             left: 0;
             z-index: 1000; 
@@ -55,7 +56,7 @@
             flex-direction: column;
             align-items: center;
             padding: 0 4em;
-            margin-top: 100px; /* Add margin to account for the fixed top-bar */
+            margin-top: 50px; 
         }
 
         .text-container {
@@ -260,10 +261,6 @@
                         newWidth = 1410;  // Cap the width at 1200px
                     }
                     
-                    // // Cap the width at 480px
-                    // if (newWidth < 1400) {
-                    //     newWidth = 1400;  
-                    // }
 
                     // Update the plot width with the capped value
                     Plotly.relayout('plot', {
