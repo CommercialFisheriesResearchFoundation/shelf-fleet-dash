@@ -21,11 +21,15 @@
         #top-bar {
             background-color: #0b285b;
             padding: 1em 0;
-            width: 100%; /* Ensure the top-bar spans 100% width */
+            width: 100%; 
             display: flex;
             align-items: center;
-            justify-content: center; /* Center the content horizontally */
+            justify-content: center; 
             color: white;
+            position: fixed; 
+            top: 0;
+            left: 0;
+            z-index: 1000; 
         }
 
         #logo {
@@ -51,6 +55,7 @@
             flex-direction: column;
             align-items: center;
             padding: 0 4em;
+            margin-top: 100px; /* Add margin to account for the fixed top-bar */
         }
 
         .text-container {
@@ -104,10 +109,6 @@
                 padding: 15px; /* Increase padding for the container */
             }
 
-            #top-bar .container {
-                padding-left: 15px; /* Adjust padding for smaller screens */
-            }
-
             h1 {
                 font-size: 2.5em; /* Increase font-size for h1 */
             }
@@ -145,6 +146,8 @@
 
             #plot {
                 height: calc(100vh - 550px);
+                width: 100%;
+                overflow: hidden;
             }
         }
     </style>
