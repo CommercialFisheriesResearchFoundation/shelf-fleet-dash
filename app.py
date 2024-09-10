@@ -171,7 +171,7 @@ def create_data_plots(plot_df):
         # List of variables to plot
         variables = ['temperature', 'absolute_salinity',
                      'density', 'chlorophyll']
-        titles = ['Degrees Celcius', 'Grams per Kilogram',
+        titles = ['Degrees Celcius', 'PSU',
                   'Kilograms per Meter\u00B3', '[Chl-a] Micrograms per Liter']
 
         # Add traces for each variable
@@ -202,11 +202,13 @@ def create_data_plots(plot_df):
                 ), row=row, col=col)
 
             # Invert the y-axis for the first subplot
-            fig.update_yaxes(autorange='reversed', row=row, col=col)
+            fig.update_yaxes(title_text='Depth (meters)',autorange='reversed', row=row, col=col)
 
-            # Set axis titles
-            fig.update_xaxes(title_text=titles[i], row=row, col=col)
-            fig.update_yaxes(title_text='Depth (meters)', row=row, col=col)
+            xmin = min(plot_df[variable]) - 0.1 * (max(plot_df[variable]) - min(plot_df[variable]))
+            xmax = max(plot_df[variable]) + 0.1 * (max(plot_df[variable]) - min(plot_df[variable]))
+
+            fig.update_xaxes(title_text=titles[i], row=row, col=col, range=[xmin,xmax])
+            fig.update_yaxes( row=row, col=col)
 
         # Define the bathymetry values, labels, and line styles
         subset_values = [-200, -100, -50]
@@ -279,6 +281,7 @@ def create_data_plots(plot_df):
         n_casts_window = plot_df['profile_id'].nunique()
 
         fig.update_layout(
+            autosize=True, # Automatically adjust the size of the figure
             font=dict(
                 size=18
             ),  #
@@ -291,7 +294,7 @@ def create_data_plots(plot_df):
             ),
             # clickmode='event+select',
             height=3000,
-            width=1600,
+            width=1410,
             showlegend=True,
             title_text=f'There are {n_casts_window} casts during this time period, with {cast_count} casts total! | Latest data: {latest_observation}',
             updatemenus=[dict(
@@ -390,7 +393,16 @@ def create_data_plots(plot_df):
                 )
             ]
         )
-
+        config = {
+            'toImageButtonOptions': {
+                'format': 'png',  # one of png, svg, jpeg, webp
+                'filename': 'cfrf_shelfdash',
+                'height': 500,
+                'width': 700,
+                'scale': 1  # Multiply title/legend/axis/canvas sizes by this factor
+            }
+        }
+        # fig.show(config=config)
     except Exception as e:
         logger.error('error: %s', e)
     return fig
