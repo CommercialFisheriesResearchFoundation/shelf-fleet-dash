@@ -92,6 +92,12 @@ def load_full_dataset():
         full_dataset.rename(
             columns=lambda x: truncate_at_first_space(x), inplace=True)
         full_dataset['time'] = pd.to_datetime(full_dataset['time'])
+        full_dataset['temp_f'] = full_dataset['temperature'] * 9/5 + 32
+        project_id_mapping = {
+        'cccfa_outer_cape': 'CCCFA',
+        'shelf_research_fleet': 'CFRF | WHOI'
+            }
+        # full_dataset['project_id_labels'] = full_dataset['project_id'].replace(project_id_mapping)
 
         # need to create a common time stamp for each profile
         first_observation = full_dataset.groupby(
@@ -156,7 +162,10 @@ def create_data_plots(plot_df):
                                  (plot_df['time_numeric'].max() -
                                   plot_df['time_numeric'].min())
     plot_df['hover_text'] = plot_df.apply(
-        lambda row: f"Date: {row['first_observation']}", axis=1)
+        lambda row: f"""
+        Date: {row['first_observation']}<br> 
+        ID: {row['profile_id']} <br>
+        Source: {row['project_id']}""", axis=1)
     # Define the color scale
     colorscale = px.colors.sequential.Rainbow
     try:
@@ -169,9 +178,9 @@ def create_data_plots(plot_df):
         )
 
         # List of variables to plot
-        variables = ['temperature', 'absolute_salinity',
+        variables = ['temp_f', 'absolute_salinity',
                      'density', 'chlorophyll']
-        titles = ['Degrees Celcius', 'PSU',
+        titles = ['Degrees Fahrenheit', 'PSU',
                   'Kilograms per Meter\u00B3', '[Chl-a] Micrograms per Liter']
 
         # Add traces for each variable
