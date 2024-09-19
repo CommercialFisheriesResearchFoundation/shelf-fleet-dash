@@ -11,7 +11,7 @@ import json
 import plotly.graph_objs as go
 import pandas as pd
 from plotly.subplots import make_subplots
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import geopandas as gpd
 from shapely.geometry import LineString
@@ -37,6 +37,8 @@ BATHY_PATHY = 'static/bathymetry/ny_gome_contours.shp'
 # Global variable to hold the full dataset
 full_dataset = None
 first_request = True
+REFRESH_INTERVAL = timedelta(minutes=30)
+last_update = datetime.min  # Initialize to a very old date
 mapbox_access_token = 'pk.eyJ1IjoibHN0b2x0eiIsImEiOiJjbTBmY2hmcGowdHh1MndvaWlvejZpNHlyIn0.BLC9SltZf5sYCGGURAWh9w'  # free public token
 
 
@@ -66,8 +68,8 @@ def simplify_geometry(geometry, tolerance=0.01):
 @app.before_request
 def load_full_dataset():
     logger.info('request for full dataset...')
-    global full_dataset, first_request, latest_observation, cast_count, bathy
-    if first_request:
+    global full_dataset, first_request, latest_observation, cast_count, bathy, last_update
+    if first_request or datetime.now() - last_update >= REFRESH_INTERVAL:
         logger.info('first time requesting or refreshing data...')
         first_request = False
 
@@ -107,7 +109,8 @@ def load_full_dataset():
         bathy = gpd.read_file(BATHY_PATHY)
         bathy = bathy[bathy['geometry'].notnull()]
         bathy['geometry'] = bathy['geometry'].apply(simplify_geometry)
-
+        # Update last update timestamp
+        last_update = datetime.now()
     else:
         logger.info('using cached dataset...')
 
