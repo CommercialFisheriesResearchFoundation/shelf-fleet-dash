@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>CFRF Shelf Research Fleet</title>
+    <title>CFRF Wind Farm Casts</title>
     <link rel="icon" href="https://ondeckdata.com/cfrf_erddap_logo.svg" type="image/svg+xml">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -237,7 +237,7 @@
         });
 
         function fetchAndPlotData(start_date, end_date) {
-            fetch('/shelfdash/filter_data', {
+            fetch('/winddash/filter_data', {
                 method: 'POST',
                 body: new URLSearchParams({
                     'start_date': start_date,

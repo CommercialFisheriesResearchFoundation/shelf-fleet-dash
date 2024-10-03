@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Define variables
-IMAGE_NAME="shelf-dash-img"
-CONTAINER_NAME="shelfdash"
-PORT_HOST=5000
-PORT_CONTAINER=5000
+IMAGE_NAME="wind-dash-img"
+CONTAINER_NAME="winddash"
+PORT_HOST=5001
+PORT_CONTAINER=5001
 
 # Stop and remove any existing container with the same name
 docker stop $CONTAINER_NAME 2>/dev/null

@@ -31,7 +31,7 @@ logging.basicConfig(
 logger.info('Starting WindDash...')
 
 app = Flask(__name__)
-app.config['APPLICATION_ROOT'] = '/shelfdash'
+app.config['APPLICATION_ROOT'] = '/winddash'
 BATHY_PATHY = 'static/bathymetry/ny_gome_contours.shp'
 
 
@@ -123,7 +123,7 @@ def load_full_dataset():
         logger.info('using cached dataset...')
 
 
-@app.route('/shelfdash')
+@app.route('/winddash')
 def index():
     logger.info('rendering index.html')
     try:
@@ -133,7 +133,7 @@ def index():
         return jsonify({'error': 'Error rendering index.html'}), 500
 
 
-@app.route('/shelfdash/filter_data', methods=['POST'])
+@app.route('/winddash/filter_data', methods=['POST'])
 def filter_data():
     # if request.remote_addr not in ALLOWED_IPS:
     #     abort(403)  # Forbidden
@@ -414,7 +414,7 @@ def create_data_plots(plot_df):
         config = {
             'toImageButtonOptions': {
                 'format': 'png',  # one of png, svg, jpeg, webp
-                'filename': 'cfrf_shelfdash',
+                'filename': 'cfrf_winddash',
                 'height': 500,
                 'width': 700,
                 'scale': 1  # Multiply title/legend/axis/canvas sizes by this factor
