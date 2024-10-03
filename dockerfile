@@ -18,10 +18,10 @@ RUN pip install -r requirements.txt
 RUN mkdir -p /app/logs
 
 # Make port 5000 available to the world outside this container
-EXPOSE 5000
+EXPOSE 5001
 
 # Define environment variable
 ENV FLASK_APP=app.py
 
 # Run gunicorn when the container launches, bettther than flask nativefor production
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "app:app"]
