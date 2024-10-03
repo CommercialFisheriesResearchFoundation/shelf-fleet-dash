@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 import logging
 import geopandas as gpd
 from shapely.geometry import LineString
+import numpy as np
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
-logger.info('Starting ShelfDash...')
+logger.info('Starting WindDash...')
 
 app = Flask(__name__)
 app.config['APPLICATION_ROOT'] = '/shelfdash'
@@ -82,7 +83,7 @@ def load_full_dataset():
                 protocol="tabledap",
                 response="nc",
             )
-            e.dataset_id = 'shelf_fleet_profiles_1m_binned'
+            e.dataset_id = 'wind_farm_profiles_1m_binned'
             full_dataset = e.to_pandas()
         except Exception as e:
             logger.error(f'Error connecting to ERDDAP server: {e}')
@@ -93,10 +94,11 @@ def load_full_dataset():
             columns=lambda x: truncate_at_first_space(x), inplace=True)
         full_dataset['time'] = pd.to_datetime(full_dataset['time'])
         full_dataset['temp_f'] = full_dataset['temperature'] * 9/5 + 32
-        project_id_mapping = {
-        'cccfa_outer_cape': 'CCCFA',
-        'shelf_research_fleet': 'CFRF | WHOI'
-            }
+        full_dataset['chlorophyll'] = np.nan
+        # project_id_mapping = {
+        # 'cccfa_outer_cape': 'CCCFA',
+        # 'shelf_research_fleet': 'CFRF | WHOI'
+        #     }
         # full_dataset['project_id_labels'] = full_dataset['project_id'].replace(project_id_mapping)
 
         # need to create a common time stamp for each profile
@@ -172,7 +174,7 @@ def create_data_plots(plot_df):
         lambda row: f"""
         Date: {row['first_observation']}<br> 
         ID: {row['profile_id']} <br>
-        Source: {row['project_id']}""", axis=1)
+        Survey: {row['survey_id']}""", axis=1)
     # Define the color scale
     colorscale = px.colors.sequential.Rainbow
     try:
