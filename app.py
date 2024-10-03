@@ -145,6 +145,13 @@ def filter_data():
 
         filtered_data = full_dataset[(full_dataset['time'] >= start_date) & (
             full_dataset['time'] <= end_date)]
+        if filtered_data.empty:
+            # set this  to the last two weeks of data if there is no new data in the last 2 weeks. le sad ...
+            last_date = full_dataset['time'].max()
+            last_range = last_date - timedelta(days=14)
+
+            filtered_data = full_dataset[(full_dataset['time'] >= last_range) & (
+                full_dataset['time'] <= last_date)]
         # fig = create_data_plot(filtered_data)
         # fig = px.line(filtered_data, x='temperature', y='sea_pressure', title='Temperature', color='time')
         logger.info('creating plots')
