@@ -427,4 +427,4 @@ def create_data_plots(plot_df):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5001)
