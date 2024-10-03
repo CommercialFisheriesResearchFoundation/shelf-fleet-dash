@@ -6,11 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:5000"  # Map port 8080 on the host to port 5000 in the container
+      - "8080:5001"  # Map port 8080 on the host to port 5000 in the container
     volumes:
       - .:/app
       - ./logs:/app/logs
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=production
-    command: ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+    command: ["gunicorn", "--bind", "0.0.0.0:5001", "app:app"]

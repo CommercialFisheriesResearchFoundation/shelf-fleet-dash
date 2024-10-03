@@ -17,7 +17,7 @@ RUN pip install -r requirements.txt
 # Create a directory for logs
 RUN mkdir -p /app/logs
 
-# Make port 5000 available to the world outside this container
+# Make port 5001 available to the world outside this container
 EXPOSE 5001
 
 # Define environment variable
