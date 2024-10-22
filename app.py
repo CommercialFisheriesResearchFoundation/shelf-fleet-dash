@@ -98,6 +98,7 @@ def load_full_dataset():
             columns=lambda x: truncate_at_first_space(x), inplace=True)
         full_dataset['time'] = pd.to_datetime(full_dataset['time'])
         full_dataset['temp_f'] = full_dataset['temperature'] * 9/5 + 32
+        full_dataset['feet'] = full_dataset['sea_pressure'] * 3.28084
         full_dataset['chlorophyll'] = np.nan
 
         try:
@@ -137,7 +138,7 @@ def subset_data(survey_id):
 
     global full_dataset
     plot_df = None
-    selected_columns = ['temp_f','temperature','sea_pressure','year','month','absolute_salinity','latitude','longitude','density']
+    selected_columns = ['temp_f','feet','temperature','sea_pressure','year','month','absolute_salinity','latitude','longitude','density']
     if survey_id == 'all':
 
         plot_df = full_dataset.loc[:, selected_columns]
@@ -238,7 +239,7 @@ def create_map(df,survey_id):
             lat=all_lats,
             lon=all_lons,
             mode='lines',
-            line=dict(color='white', width=2), 
+            line=dict(color='white', width=2),
             hovertext=labels[value],
             hoverinfo='text',
             hoverlabel=dict(
@@ -279,21 +280,37 @@ def create_map(df,survey_id):
 
     center_lat = df['latitude'].mean()
     center_lon = df['longitude'].mean()
+    # Calculate the bounds of the sampling box
+    min_lat = df['latitude'].quantile(0.10)
+    max_lat = df['latitude'].quantile(0.90)
+    min_lon = df['longitude'].quantile(0.10)
+    max_lon = df['longitude'].quantile(0.90)
+
+    # Define the corners of the bounding box
+    bounding_box = [
+        (min_lat, min_lon),
+        (min_lat, max_lon),
+        (max_lat, max_lon),
+        (max_lat, min_lon),
+        (min_lat, min_lon)  # Close the polygon by repeating the first point
+    ]
+
+    lats, lons = zip(*bounding_box)
 
     fig.add_trace(go.Scattermapbox(
-        lat=[center_lat],
-        lon=[center_lon],
-        mode='markers',
-        marker=dict(size=15, color='red'),
+        lat=lats,
+        lon=lons,
+        fill='toself',
+        mode='lines',
+        line=dict(width=2, color='red'),
         hoverinfo='text',
-        hovertext=f'Mean Location: {survey_id}',
+        hovertext=f'Survey Area: {survey_id}',
         hoverlabel=dict(
             font=dict(
                 size=20) 
         ),
-        showlegend=False 
+        showlegend=False
     ))
-
 
 
     fig.update_layout(
@@ -301,9 +318,26 @@ def create_map(df,survey_id):
             accesstoken=mapbox_access_token,
             style="mapbox://styles/mapbox/satellite-v9",
             center=dict(lat=center_lat, lon=center_lon),
-            zoom=8
+            zoom=10
         ),
-        margin={"r":0,"t":0,"l":0,"b":0}
+        margin={"r":0,"t":0,"l":0,"b":0},
+        annotations=[
+            dict(
+                    text=f'Content developed by Linus Stoltz, Data Manager',
+                    x=0.7,
+                    y=0.001,
+                    xref='paper',
+                    yref='paper',
+                    showarrow=False,
+                    font=dict(
+                        size=16,
+                        color='white',  # Change the color to red
+                        family='Arial, sans-serif',  # Set the font family
+                        weight='bold'  # Make the text bold
+                    )
+                )
+            ]
+        
     )
     return fig
 
@@ -334,7 +368,7 @@ def create_data_plots(df=None,variable='temperature',label='label'):
     )
 
     # Invert the y-axis for the plot
-    scatter_fig.update_yaxes(title_text='Depth (meters)', autorange='reversed')
+    scatter_fig.update_yaxes(title_text='Depth', autorange='reversed')
 
     # Add a date range slider
     scatter_fig.update_xaxes(
@@ -367,6 +401,43 @@ def create_data_plots(df=None,variable='temperature',label='label'):
                             args=[{"marker.color": [df['temperature']],"marker.colorbar.title.text": "Temperature (°C)"}],
                             label="Show °C",
                             method="restyle"
+                        ),
+                                                dict(
+                            args=[{"y": [df['sea_pressure']],"marker.colorbar.title.text": "Temperature (°F)"}],
+                            label="Show meters",
+                            method="update"
+                        ),
+                        dict(
+                            args=[{"y": [df['feet']],"marker.colorbar.title.text": "Temperature (°C)"}],
+                            label="Show Feet",
+                            method="update"
+                        )
+                    ]),
+                    pad={"r": 10, "t": 10},
+                    showactive=True,
+                    x=0.8,
+                    xanchor="left",
+                    y=1.2,
+                    yanchor="top"
+                ),
+            ]
+        )
+    else:
+        scatter_fig.update_layout(
+            updatemenus=[
+                dict(
+                    type="buttons",
+                    direction="left",
+                    buttons=list([
+                        dict(
+                            args=[{"y": [df['sea_pressure']],"marker.colorbar.title.text": "Temperature (°F)"}],
+                            label="Show meters",
+                            method="update"
+                        ),
+                        dict(
+                            args=[{"y": [df['feet']],"marker.colorbar.title.text": "Temperature (°C)"}],
+                            label="Show Feet",
+                            method="update"
                         )
                     ]),
                     pad={"r": 10, "t": 10},
@@ -378,7 +449,37 @@ def create_data_plots(df=None,variable='temperature',label='label'):
                 ),
             ]
         )
+    # Add depth unit toggle
+    # try:
+    #     scatter_fig.update_layout(
+    #         updatemenus=[
+    #             dict(
+    #                 type="buttons",
+    #                 direction="left",
+    #                 buttons=list([
+    #                     dict(
+    #                         args=[{"y": [df['sea_pressure']], "yaxis.title.text": "Depth (m)"}],
+    #                         label="Show Meters",
+    #                         method="update"  # Changed from "restyle" to "update"
+    #                     ),
+    #                     dict(
+    #                         args=[{"y": [df['feet']], "yaxis.title.text": "Depth (ft)"}],
+    #                         label="Show Feet",
+    #                         method="update"  # Changed from "restyle" to "update"
+    #                     )
+    #                 ]),
+    #                 pad={"r": 10, "t": 10},
+    #                 showactive=True,
+    #                 x=0.4,
+    #                 xanchor="left",
+    #                 y=1.4,  # Adjusted y position for the new button
+    #                 yanchor="top"
+    #             ),
+    #         ]
+    #     )
 
+    # except Exception as e:
+    #     logger.error('error: %s',e,exc_info=True)
 
     return scatter_fig
 
