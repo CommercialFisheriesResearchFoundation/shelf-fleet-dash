@@ -280,38 +280,20 @@ def create_map(df,survey_id):
 
     center_lat = df['latitude'].mean()
     center_lon = df['longitude'].mean()
-    # Calculate the bounds of the sampling box
-    min_lat = df['latitude'].quantile(0.10)
-    max_lat = df['latitude'].quantile(0.90)
-    min_lon = df['longitude'].quantile(0.10)
-    max_lon = df['longitude'].quantile(0.90)
-
-    # Define the corners of the bounding box
-    bounding_box = [
-        (min_lat, min_lon),
-        (min_lat, max_lon),
-        (max_lat, max_lon),
-        (max_lat, min_lon),
-        (min_lat, min_lon)  # Close the polygon by repeating the first point
-    ]
-
-    lats, lons = zip(*bounding_box)
 
     fig.add_trace(go.Scattermapbox(
-        lat=lats,
-        lon=lons,
-        fill='toself',
-        mode='lines',
-        line=dict(width=2, color='red'),
+        mode='markers',  # Plot each point as a marker
+        lat=df['latitude'],
+        lon=df['longitude'],
+        marker=dict(size=14, color='red'),  # Customize marker size and color
         hoverinfo='text',
-        hovertext=f'Survey Area: {survey_id}',
+        hovertext=f'Survey: {survey_id}',
         hoverlabel=dict(
             font=dict(
                 size=20) 
         ),
         showlegend=False
     ))
-
 
     fig.update_layout(
         mapbox=dict(
