@@ -12,7 +12,7 @@ COPY . /app
 RUN pip install -r requirements.txt
 
 # # Install gunicorn for production
-# RUN pip install gunicorn
+RUN pip install gunicorn
 
 # Create a directory for logs
 RUN mkdir -p /app/logs
