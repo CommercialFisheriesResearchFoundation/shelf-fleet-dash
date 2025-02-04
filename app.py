@@ -175,6 +175,7 @@ def create_data_plots(plot_df):
         Source: {row['project_id']}""", axis=1)
     # Define the color scale
     colorscale = px.colors.sequential.Rainbow
+    logger.info('plot_df: %s', plot_df.head())
     try:
 
         fig = make_subplots(
