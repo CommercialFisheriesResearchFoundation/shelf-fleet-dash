@@ -202,6 +202,7 @@ def create_data_plots(plot_df):
                 color = colorscale[color_idx]
                 # Show legend only for the first variable
                 showlegend = (i == 0)
+                logger.debug(f"Adding trace for variable {variable}, profile_id {profile_id}, color {color}")
                 fig.add_trace(go.Scatter(
                     x=group[variable],
                     y=group['sea_pressure'],
@@ -247,7 +248,8 @@ def create_data_plots(plot_df):
                 all_lats.append(None)  # Add None to separate lines
                 all_lons.append(None)
 
-            # Add the trace to the Plotly figure
+            logger.debug(f"Adding bathymetry line for value {value}")
+            
             fig.add_trace(go.Scattermapbox(
                 lat=all_lats,
                 lon=all_lons,
@@ -275,6 +277,8 @@ def create_data_plots(plot_df):
             color_idx = int(plot_df[plot_df['first_observation'] == row['first_observation']]
                             ['time_normalized'].iloc[0] * (len(colorscale) - 1))
             color = colorscale[color_idx]
+            logger.debug(f"Adding map marker for profile_id {profile_id}, color {color}")
+            
             fig.add_trace(go.Scattermapbox(
                 lat=[row['latitude']],
                 lon=[row['longitude']],
