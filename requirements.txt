@@ -1,6 +1,6 @@
-Flask
-gunicorn
-pandas
-erddapy
-plotly
-geopandas
+Flask==3.0.3
+gunicorn==23.0.0
+pandas==2.2.2
+erddapy==2.2.0
+plotly==5.23.0
+geopandas==1.0.1
