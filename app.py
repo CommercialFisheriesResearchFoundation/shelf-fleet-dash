@@ -69,56 +69,56 @@ def simplify_geometry(geometry, tolerance=0.01):
 def load_full_dataset():
     logger.info('request for full dataset...')
     global full_dataset, first_request, latest_observation, cast_count, bathy, last_update
-    if first_request or datetime.now() - last_update >= REFRESH_INTERVAL:
-        logger.info('first time requesting or refreshing data...')
-        first_request = False
+    # if first_request or datetime.now() - last_update >= REFRESH_INTERVAL:
+    logger.info('first time requesting or refreshing data...')
+    first_request = False
 
-        # Build the ERDDAP query URL for the full dataset
-        server = 'https://erddap.ondeckdata.com/erddap/'
+    # Build the ERDDAP query URL for the full dataset
+    server = 'https://erddap.ondeckdata.com/erddap/'
 
-        try:
-            e = ERDDAP(
-                server=server,
-                protocol="tabledap",
-                response="nc",
-            )
-            e.dataset_id = 'shelf_fleet_profiles_1m_binned'
-            full_dataset = e.to_pandas()
-        except Exception as e:
-            logger.error(f'Error connecting to ERDDAP server: {e}')
-            return
-        logger.info('got data from erddap')
-        # Do some reshaping a bit to plot on the front ent
-        full_dataset.rename(
-            columns=lambda x: truncate_at_first_space(x), inplace=True)
-        full_dataset['time'] = pd.to_datetime(full_dataset['time'])
-        full_dataset['temp_f'] = full_dataset['temperature'] * 9/5 + 32
-        project_id_mapping = {
-        'cccfa_outer_cape': 'CCCFA',
-        'shelf_research_fleet': 'CFRF | WHOI'
-            }
-        # full_dataset['project_id_labels'] = full_dataset['project_id'].replace(project_id_mapping)
+    try:
+        e = ERDDAP(
+            server=server,
+            protocol="tabledap",
+            response="nc",
+        )
+        e.dataset_id = 'shelf_fleet_profiles_1m_binned'
+        full_dataset = e.to_pandas()
+    except Exception as e:
+        logger.error(f'Error connecting to ERDDAP server: {e}')
+        return
+    logger.info('got data from erddap')
+    # Do some reshaping a bit to plot on the front ent
+    full_dataset.rename(
+        columns=lambda x: truncate_at_first_space(x), inplace=True)
+    full_dataset['time'] = pd.to_datetime(full_dataset['time'])
+    full_dataset['temp_f'] = full_dataset['temperature'] * 9/5 + 32
+    project_id_mapping = {
+    'cccfa_outer_cape': 'CCCFA',
+    'shelf_research_fleet': 'CFRF | WHOI'
+        }
+    # full_dataset['project_id_labels'] = full_dataset['project_id'].replace(project_id_mapping)
 
-        # need to create a common time stamp for each profile
-        first_observation = full_dataset.groupby(
-            'profile_id')['time'].first().reset_index()
-        first_observation.rename(columns={'time': 'sample_date'}, inplace=True)
-        # and merge it back in
-        full_dataset = full_dataset.merge(
-            first_observation, on='profile_id', how='left')
-        full_dataset['first_observation'] = full_dataset['sample_date'].dt.strftime(
-            '%Y-%m-%d %H:%M')
-        full_dataset['time_numeric'] = pd.to_numeric(full_dataset['time'])
-        latest_observation = full_dataset['time'].max().strftime('%Y-%m-%d')
-        cast_count = full_dataset['profile_id'].nunique()
-        # full_dataset['extracted_date'] = full_dataset['profile_id'].apply(extract_date_from_string)
-        bathy = gpd.read_file(BATHY_PATHY)
-        bathy = bathy[bathy['geometry'].notnull()]
-        bathy['geometry'] = bathy['geometry'].apply(simplify_geometry)
-        # Update last update timestamp
-        last_update = datetime.now()
-    else:
-        logger.info('using cached dataset...')
+    # need to create a common time stamp for each profile
+    first_observation = full_dataset.groupby(
+        'profile_id')['time'].first().reset_index()
+    first_observation.rename(columns={'time': 'sample_date'}, inplace=True)
+    # and merge it back in
+    full_dataset = full_dataset.merge(
+        first_observation, on='profile_id', how='left')
+    full_dataset['first_observation'] = full_dataset['sample_date'].dt.strftime(
+        '%Y-%m-%d %H:%M')
+    full_dataset['time_numeric'] = pd.to_numeric(full_dataset['time'])
+    latest_observation = full_dataset['time'].max().strftime('%Y-%m-%d')
+    cast_count = full_dataset['profile_id'].nunique()
+    # full_dataset['extracted_date'] = full_dataset['profile_id'].apply(extract_date_from_string)
+    bathy = gpd.read_file(BATHY_PATHY)
+    bathy = bathy[bathy['geometry'].notnull()]
+    bathy['geometry'] = bathy['geometry'].apply(simplify_geometry)
+    # Update last update timestamp
+    last_update = datetime.now()
+    # else:
+    #     logger.info('using cached dataset...')
 
 
 @app.route('/shelfdash')
